@@ -54,6 +54,9 @@ A) Likely the MIPI Integrated Circuit on the D8M is out-of-sync. Reprogram the F
 Q) How can I edit the Nios II firmware?
 A) Open Quartus, click on Tools / Nios II Software Build Tools for Eclipse, File / Import, General / Existing Projects into Workspace, Select root directory: D:\FPGA\CameraVision2\eda\de0-nano\software where the path is you project location
 
+Q) Why there is a dim blue light in my images?
+A) Please cover the DE0-Nano on-board power led 
+
 Q) What's next?
 A) There is still room for improvements:
 - FT232H controller: fully utilise the USB 2.0 bandwidth by adding a FIFO memory to decouple the SDRAM memory
