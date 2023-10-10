@@ -1,0 +1,175 @@
+﻿<Window x:Class="CameraVision.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+        Loaded="Window_Loaded" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased"
+        Title="Camera Vision v2.0 by Leonardo @ http://electro-logic.blogspot.it" Width="1920" Height="1080" WindowStartupLocation="CenterScreen" IsEnabled="{Binding IsEnabled}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            <Style TargetType="GroupBox">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <!-- Registers -->
+        <GroupBox Header="Registers">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Read Camera" Command="{Binding ReadRegistersCommand}" />
+                <Button Content="Read Mipi" Command="{Binding ReadMipiRegistersCommand}" Grid.Column="1" />
+                <Button Content="Load" Command="{Binding LoadRegistersCommand}" Grid.Column="2" />
+                <!--<Button Content="Save" Command="{Binding SaveRegistersCommand}" Grid.Column="2" />-->
+            </Grid>
+        </GroupBox>
+        <DataGrid Grid.Row="1" Margin="10" ItemsSource="{Binding Registers}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address, StringFormat=\{0:X\}}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Value"  Binding="{Binding Value}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <GridSplitter Grid.Row="2" ResizeDirection="Rows" HorizontalAlignment="Stretch" Margin="10,0,10,0" />
+        <DataGrid Grid.Row="3" Margin="10" ItemsSource="{Binding MipiRegisters}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address, StringFormat=\{0:X\}}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Value"  Binding="{Binding Value}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Settings -->
+        <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="3">
+            <GroupBox Header="Exposure">
+                <StackPanel Margin="10">
+                    <Slider Value="{Binding Exposure}" TickPlacement="BottomRight" Maximum="65535" SmallChange="1" LargeChange="128" />
+                    <TextBlock Text="{Binding ExposureMs, FallbackValue=0 ms, Mode=OneWay, StringFormat=\{0\} ms}" TextAlignment="Center" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Analog Gain (ISO)">
+                <StackPanel Margin="10">
+                    <Slider Value="{Binding AnalogGain}" TickPlacement="BottomRight" Maximum="16" Minimum="1" SmallChange="1"
+                            Ticks="1 2 4 8 16" IsSnapToTickEnabled="True" />
+                    <TextBlock TextAlignment="Center">
+                        <Run Text="{Binding AnalogGain, FallbackValue=0x, StringFormat=\{0\}x}"/>
+                        <Run Text="{Binding ISO, FallbackValue=(ISO 100), StringFormat=(ISO \{0\}), Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox>
+                <GroupBox.Header>
+                    <CheckBox Content="Manual White Balance Gain" IsChecked="{Binding IsWhiteBalanceEnabled}" />
+                </GroupBox.Header>
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Red " TextAlignment="Right" />
+                    <TextBlock Grid.Row="1" Text="Green " TextAlignment="Right" />
+                    <TextBlock Grid.Row="2" Text="Blue " TextAlignment="Right" />
+
+                    <Slider Grid.Row="0" Grid.Column="1" Value="{Binding MWBGainRed}" Maximum="16" LargeChange="1" SmallChange="1" TickFrequency="1" TickPlacement="BottomRight"/>
+                    <Slider Grid.Row="1" Grid.Column="1" Value="{Binding MWBGainGreen}" Maximum="16" LargeChange="1" SmallChange="1" TickFrequency="1" TickPlacement="BottomRight"/>
+                    <Slider Grid.Row="2" Grid.Column="1" Value="{Binding MWBGainBlue}" Maximum="16" LargeChange="1" SmallChange="1" TickFrequency="1" TickPlacement="BottomRight"/>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding MWBGainRed}" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding MWBGainGreen}" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding MWBGainBlue}" />
+                </Grid>
+            </GroupBox>
+
+            <TextBlock Text="Read camera registers after changing settings" TextWrapping="Wrap" Margin="10" FontStyle="Italic" HorizontalAlignment="Center" />
+
+            <GroupBox Header="Focus">
+                <StackPanel Margin="10">
+                    <Slider Value="{Binding Focus}" Maximum="1023" LargeChange="32" SmallChange="1" TickFrequency="64" TickPlacement="BottomRight"/>
+                    <TextBlock Text="{Binding Focus, FallbackValue=0}" TextAlignment="Center" />
+                </StackPanel>
+            </GroupBox>
+            <!--<Button Content="Focus Bracketing" Command="{Binding FocusBracketingCommand}" Margin="10" />-->
+            <!--<Button Content="Exposure Bracketing" Command="{Binding ExposureBracketingCommand}" Margin="10" />-->
+            <GroupBox Header="Statistics">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!--<Border BorderBrush="Black" BorderThickness="1" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Polygon Points="{Binding HistogramPoints, UpdateSourceTrigger=PropertyChanged}" Stroke="Black" Fill="Yellow" Stretch="None" Height="100" Width="256">
+                            <Polygon.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="-1"/>
+                                </TransformGroup>
+                            </Polygon.LayoutTransform>
+                        </Polygon>
+                    </Border>-->
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
+                        <TextBlock>
+                            <Run Text="Minimum" />
+                            <Run Text="{Binding MinimumValue}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Maximum" />
+                            <Run Text="{Binding MaximumValue}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+        </StackPanel>
+        <GroupBox Grid.Column="2" Header="Communication">
+            <Grid Margin="10">
+                <ComboBox ItemsSource="{Binding Communications}" SelectedItem="{Binding Communication, Mode=TwoWay}" VerticalAlignment="Center" />
+            </Grid>
+        </GroupBox>
+
+        <!-- Image -->
+        <GroupBox Grid.Column="1" Header="Image">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Read" Command="{Binding DownloadImageCommand}" />
+                <Button Content="Save TIFF + RAW" Command="{Binding SaveImageCommand}" Grid.Column="1" />
+                <ComboBox Grid.Column="2" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="6" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <Image x:Name="image" Source="{Binding Image}" Margin="10" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
+        <ProgressBar Visibility="{Binding ProgressVisibility}" Value="{Binding DownloadProgress}" Grid.Column="1" HorizontalAlignment="Center" Height="25" Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Center" Width="200"/>
+        <TextBlock x:Name="tbInfo" d:Text="Status" Text="" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Grid>
+</Window>
