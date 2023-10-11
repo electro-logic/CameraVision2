@@ -37,27 +37,51 @@ Quick start:
 1) Connect D8M into GPIO0 of DE0-Nano like shown into images into \doc folder 
 2) Connect DE0-Nano to PC with the USB cable bundled
 
-Optional
-2b) Connect UM232H with the adapter into GPIO1
-2c) Connect UM232H to PC with an USB 2.0 cable
+optional 2b) Connect UM232H with the adapter into GPIO1
+
+optional 2c) Connect UM232H to PC with an USB 2.0 cable
 
 3) Program the bitstream \eda\de0-nano\output_files\DE0_NANO_D8M.sof into the DE0-Nano with Quartus Programmer 
 4) Wait that LED0 turn on and launch CameraVision.exe (available compiled or can be compiled from the source code)
-4b) Optionally select COM_FT232H from the Communication panel if you are using the UM232H
-6) Press the Read button to take a new image
+   
+optional 4b) Select COM_FT232H from the Communication panel if you are using the UM232H
+
+5) Press the Read button to take a new image
 
 F.A.Q.
 
-Q) When I launch CameraVision.exe image is corrupted.
+**Q) When I launch CameraVision.exe image is corrupted.**
+
 A) Likely the MIPI Integrated Circuit on the D8M is out-of-sync. Reprogram the FPGA or Try to press KEY0 on DE0-NANO to reset the system and launch again the software.
 
-Q) How can I edit the Nios II firmware?
+
+**Q) How can I edit the Nios II firmware?**
+
 A) Open Quartus, click on Tools / Nios II Software Build Tools for Eclipse, File / Import, General / Existing Projects into Workspace, Select root directory: D:\FPGA\CameraVision2\eda\de0-nano\software where the path is you project location
 
-Q) Why there is a dim blue light in my images?
+
+**Q) Why there is a dim blue light in my images?**
+
 A) Please cover the DE0-Nano on-board power led 
 
-Q) What's next?
+
+**Q) Why 10 bits images are required?**
+
+A) RAW images are linear and 10-bit are required to retain quality after the gamma-encoding (ex. JPEG) 
+
+
+**Q) Are sensor images ready to use?**
+
+A) Images from the sensor are raw pixels and post-processing is required to improve the visual quality. This includes gamma-encoding, color correction, sharpening, etc..
+
+
+**Q) Can I use another dev board?**
+
+A) You can use any Terasic development board compatible with the D8M camera, for example DE2-115, DE1-SoC, DE0-CV, C5G, DE10-Lite, DE10-Standard, DE10-Nano, etc.. some changes may be required, always check and adapt the pinout for your board and the memory timing. Please open an issue if you need help with a specific board.
+
+
+**Q) What's next?**
+
 A) There is still room for improvements:
 - FT232H controller: fully utilise the USB 2.0 bandwidth by adding a FIFO memory to decouple the SDRAM memory
 - Improve the protocol to use a single cable (ex. JTAG only or FT232H only)
