@@ -1,17 +1,14 @@
 ﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
 
-using CameraVision2;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -833,17 +830,21 @@ namespace CameraVision
             double cropFactor = sensor35Diagonal / sensorDiagonal;
             double focalLengthIn35mmFilm = cropFactor * f;
             double exposureSecs = ExposureMs / 1000.0;
-            // Metadata query documentation: https://learn.microsoft.com/en-us/windows/win32/wic/system-photo
+            // Metadata query documentation
+            // https://learn.microsoft.com/en-us/windows/win32/wic/system-photo
+            // https://www.awaresystems.be/imaging/tiff.html
+            // https://exiftool.org/TagNames/EXIF.html
             var bmpMetadata = new BitmapMetadata("tiff");
             // TIFF Exif metadata
             bmpMetadata.SetQuery("/ifd/exif/{ushort=37386}", ExifRational(f));
             bmpMetadata.SetQuery("/ifd/exif/{ushort=41989}", focalLengthIn35mmFilm.ToString());
             bmpMetadata.SetQuery("/ifd/exif/{ushort=33437}", ExifRational(fstop));
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=33434}", ExifRational(exposureSecs));  // Exposure time (seconds)
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=33434}", ExifRational(exposureSecs));                   // Exposure time (seconds)
             bmpMetadata.SetQuery("/ifd/exif/{ushort=34855}", (UInt16)ISO);
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=41987}", 1);                            // White Balance (0 = Auto white balance, 1 = Manual white balance)
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=41987}", 1);                                            // White Balance (0 = Auto white balance, 1 = Manual white balance)
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=36867}", DateTime.Now.ToString("yyyy:MM:dd HH:mm:ss")); // Date taken
             bmpMetadata.SetQuery("/ifd/{ushort=271}", maker);
-            bmpMetadata.SetQuery("/ifd/{ushort=272}", model);            
+            bmpMetadata.SetQuery("/ifd/{ushort=272}", model);
             // TIFF XMP metadata
             bmpMetadata.SetQuery("/ifd/xmp/exif:FocalLength", f.ToString());
             bmpMetadata.SetQuery("/ifd/xmp/exif:FocalLengthIn35mmFilm", focalLengthIn35mmFilm.ToString());
@@ -853,6 +854,7 @@ namespace CameraVision
             bmpMetadata.SetQuery("/ifd/xmp/exif:ExposureTime", $"{exposureSecs}");
             bmpMetadata.SetQuery("/ifd/xmp/exif:ISOSpeed", $"{(UInt16)ISO}");
             bmpMetadata.SetQuery("/ifd/xmp/exif:WhiteBalance", "1");
+            bmpMetadata.SetQuery("/ifd/xmp/exif:DateTimeOriginal", DateTime.Now.ToString("yyyy:MM:dd HH:mm:ss"));
             return bmpMetadata;
         }
         ulong ExifRational(uint numerator, uint denominator) => numerator | ((ulong)denominator << 32);
@@ -880,10 +882,16 @@ namespace CameraVision
                 using (var stream = new FileStream(filename, FileMode.Create))
                 {
                     var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.None };
-                    BitmapFrame bmpFrame = BitmapFrame.Create(BitmapSource.Create(Image.PixelWidth, Image.PixelHeight, 96.0, 96.0, PixelFormats.Gray16, null, rawPixels, Image.PixelWidth * 2));
+                    var frame = BitmapSource.Create(Image.PixelWidth, Image.PixelHeight, 96.0, 96.0, PixelFormats.Gray16, null, rawPixels, Image.PixelWidth * 2);
+                    var metadata = GetTIFFMetadataD8M();
+                    metadata.SetQuery("/ifd/{ushort=262}", 32803);                              // PhotometricInterpretation    32803 = CFA (Color Filter Array)
+                    metadata.SetQuery("/ifd/{ushort=33421}", new UInt16[] { 2, 2 });            // CFARepeatPatternDim          2x2
+                    metadata.SetQuery("/ifd/{ushort=33422}", new byte[] { 2, 1, 1, 0 });        // CFAPattern2                  BGGR
+                    metadata.SetQuery("/ifd/xmp/tiff:PhotometricInterpretation", "32803");
+                    BitmapFrame bmpFrame = BitmapFrame.Create(frame,null, metadata, null);
                     encoder.Frames.Add(bmpFrame);
                     encoder.Save(stream);
-                }
+                }                
             }
         }
     }
