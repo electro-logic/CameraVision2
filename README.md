@@ -39,7 +39,7 @@ Quick start:
 
 optional 2b) Connect UM232H with the adapter into GPIO1
 
-optional 2c) Connect UM232H to PC with an USB 2.0 cable
+optional 2c) Connect UM232H to PC with an USB 2.0 cable. The module should be [configured](https://electro-logic.blogspot.com/2014/02/fpga-comunicazione-ad-alta-velocita_16.html) with the FT_PROG utility.
 
 3) Program the bitstream \eda\de0-nano\output_files\DE0_NANO_D8M.sof into the DE0-Nano with Quartus Programmer 
 4) Wait that LED0 turn on and launch CameraVision.exe (available compiled or can be compiled from the source code)
