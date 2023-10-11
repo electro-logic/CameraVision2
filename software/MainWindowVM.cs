@@ -832,23 +832,31 @@ namespace CameraVision
             double sensorDiagonal = Math.Sqrt(sensorWidth * sensorWidth + sensorHeight * sensorHeight);
             double cropFactor = sensor35Diagonal / sensorDiagonal;
             double focalLengthIn35mmFilm = cropFactor * f;
+            double exposureSecs = ExposureMs / 1000.0;
             // Metadata query documentation: https://learn.microsoft.com/en-us/windows/win32/wic/system-photo
             var bmpMetadata = new BitmapMetadata("tiff");
             // TIFF Exif metadata
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=37386}", f);
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=37386}", ExifRational(f));
             bmpMetadata.SetQuery("/ifd/exif/{ushort=41989}", focalLengthIn35mmFilm.ToString());
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=33437}", fstop);
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=33437}", ExifRational(fstop));
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=33434}", ExifRational(exposureSecs));  // Exposure time (seconds)
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=34855}", (UInt16)ISO);
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=41987}", 1);                            // White Balance (0 = Auto white balance, 1 = Manual white balance)
             bmpMetadata.SetQuery("/ifd/{ushort=271}", maker);
-            bmpMetadata.SetQuery("/ifd/{ushort=272}", model);
+            bmpMetadata.SetQuery("/ifd/{ushort=272}", model);            
             // TIFF XMP metadata
             bmpMetadata.SetQuery("/ifd/xmp/exif:FocalLength", f.ToString());
             bmpMetadata.SetQuery("/ifd/xmp/exif:FocalLengthIn35mmFilm", focalLengthIn35mmFilm.ToString());
             bmpMetadata.SetQuery("/ifd/xmp/exif:FNumber", fstop.ToString());
             bmpMetadata.SetQuery("/ifd/xmp/tiff:Make", maker);
             bmpMetadata.SetQuery("/ifd/xmp/tiff:Model", model);
+            bmpMetadata.SetQuery("/ifd/xmp/exif:ExposureTime", $"{exposureSecs}");
+            bmpMetadata.SetQuery("/ifd/xmp/exif:ISOSpeed", $"{(UInt16)ISO}");
+            bmpMetadata.SetQuery("/ifd/xmp/exif:WhiteBalance", "1");
             return bmpMetadata;
         }
-
+        ulong ExifRational(uint numerator, uint denominator) => numerator | ((ulong)denominator << 32);
+        ulong ExifRational(double number) => ExifRational((uint)(number * 100), 100);
         public void SaveImage()
         {
             var dlg = new SaveFileDialog();

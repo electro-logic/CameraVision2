@@ -63,5 +63,4 @@ A) There is still room for improvements:
 - Improve the protocol to use a single cable (ex. JTAG only or FT232H only)
 - Add parameters to customize the mipi controller and the ft232h component from the Platform Designer
 - Additional image statistics
-  Additional TIFF metadata (ex. Exposure, ISO, etc..)
 - Video recording
