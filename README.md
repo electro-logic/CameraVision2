@@ -26,7 +26,7 @@ Required Software:
 
 Required Hardware:
 
-- Terasic DE0-Nano (Cyclone IV 22K LEs FPGA)
+- Terasic DE0-Nano (Cyclone IV 22K LEs FPGA) or another Terasic compatible dev board (see FAQ)
 - Terasic D8M (OV8865 Image Sensor + MIPI Decoder TC358748XBG)
 
 Optional Hardware:
