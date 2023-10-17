@@ -14,7 +14,7 @@ What's new:
 
 - Full 10 bit support
 - JTAG only / JTAG + USB 2.0 communication options
-- TIFF + RAW export with metadata
+- TIFF + DNG RAW export with metadata
 - Image Statistics, Download progress
 - New MIPI and Camera registers
 - Updated toolchain for a modern development environment
