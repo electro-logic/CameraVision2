@@ -21,3 +21,4 @@ synthesis/
 *.pin
 *.jdi
 *.done
+/eda/de0-nano/greybox_tmp

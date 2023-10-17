@@ -162,7 +162,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Read" Command="{Binding DownloadImageCommand}" />
-                <Button Content="Save TIFF + RAW" Command="{Binding SaveImageCommand}" Grid.Column="1" />
+                <Button Content="Save TIFF + DNG RAW" Command="{Binding SaveImageCommand}" Grid.Column="1" />
                 <ComboBox Grid.Column="2" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
                 <ComboBox Grid.Column="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
                 <TextBlock Grid.Column="6" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>

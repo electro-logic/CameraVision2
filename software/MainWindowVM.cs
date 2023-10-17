@@ -815,7 +815,8 @@ namespace CameraVision
             }
             IsEnabled = true;
         }
-
+        const string maker = "CameraVision2";
+        const string model = "D8M";
         BitmapMetadata GetTIFFMetadataD8M()
         {
             // D8M / OV8865 specs
@@ -823,8 +824,6 @@ namespace CameraVision
             const double fstop = 2.8;
             const double sensorWidth = 4.6144;
             const double sensorHeight = 3.472;
-            const string maker = "";
-            const string model = "D8M";
             double sensor35Diagonal = Math.Sqrt(36 * 36 + 24 * 24);
             double sensorDiagonal = Math.Sqrt(sensorWidth * sensorWidth + sensorHeight * sensorHeight);
             double cropFactor = sensor35Diagonal / sensorDiagonal;
@@ -837,11 +836,11 @@ namespace CameraVision
             var bmpMetadata = new BitmapMetadata("tiff");
             // TIFF Exif metadata
             bmpMetadata.SetQuery("/ifd/exif/{ushort=37386}", ExifRational(f));
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=41989}", focalLengthIn35mmFilm.ToString());
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=41989}", (ushort)focalLengthIn35mmFilm);
             bmpMetadata.SetQuery("/ifd/exif/{ushort=33437}", ExifRational(fstop));
             bmpMetadata.SetQuery("/ifd/exif/{ushort=33434}", ExifRational(exposureSecs));                   // Exposure time (seconds)
             bmpMetadata.SetQuery("/ifd/exif/{ushort=34855}", (UInt16)ISO);
-            bmpMetadata.SetQuery("/ifd/exif/{ushort=41987}", 1);                                            // White Balance (0 = Auto white balance, 1 = Manual white balance)
+            bmpMetadata.SetQuery("/ifd/exif/{ushort=41987}", (ushort)1);                                     // White Balance (0 = Auto white balance, 1 = Manual white balance)
             bmpMetadata.SetQuery("/ifd/exif/{ushort=36867}", DateTime.Now.ToString("yyyy:MM:dd HH:mm:ss")); // Date taken
             bmpMetadata.SetQuery("/ifd/{ushort=271}", maker);
             bmpMetadata.SetQuery("/ifd/{ushort=272}", model);
@@ -877,21 +876,33 @@ namespace CameraVision
                     encoder.Frames.Add(bmpFrame);
                     encoder.Save(stream);
                 }
-                // Save RAW
+                // Save RAW (two steps)
+                // Step 1: Create a RAW TIFF file
                 filename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_raw.tiff");
+                var filenameDng = Path.ChangeExtension(filename, ".dng");
                 using (var stream = new FileStream(filename, FileMode.Create))
                 {
                     var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.None };
                     var frame = BitmapSource.Create(Image.PixelWidth, Image.PixelHeight, 96.0, 96.0, PixelFormats.Gray16, null, rawPixels, Image.PixelWidth * 2);
                     var metadata = GetTIFFMetadataD8M();
-                    metadata.SetQuery("/ifd/{ushort=262}", 32803);                              // PhotometricInterpretation    32803 = CFA (Color Filter Array)
-                    metadata.SetQuery("/ifd/{ushort=33421}", new UInt16[] { 2, 2 });            // CFARepeatPatternDim          2x2
-                    metadata.SetQuery("/ifd/{ushort=33422}", new byte[] { 2, 1, 1, 0 });        // CFAPattern2                  BGGR
-                    metadata.SetQuery("/ifd/xmp/tiff:PhotometricInterpretation", "32803");
+                    //metadata.SetQuery("/ifd/{ushort=262}", 32803);                              // PhotometricInterpretation    32803 = CFA (Color Filter Array)
+                    //metadata.SetQuery("/ifd/{ushort=33421}", new UInt16[] { 2, 2 });            // CFARepeatPatternDim          2x2
+                    //metadata.SetQuery("/ifd/{ushort=33422}", new byte[] { 2, 1, 1, 0 });        // CFAPattern2                  BGGR
+                    //metadata.SetQuery("/ifd/xmp/tiff:PhotometricInterpretation", "32803");
                     BitmapFrame bmpFrame = BitmapFrame.Create(frame,null, metadata, null);
                     encoder.Frames.Add(bmpFrame);
                     encoder.Save(stream);
-                }                
+                }
+                // Step 2: Add DNG tags and save as .DNG, delete the RAW TIFF then
+                // We use ExifTool https://exiftool.org because of BitmapMetadata limitations
+                // The tool dng_validate.exe available in the DNG SDK can be used to validate the DNG file
+                Process.Start(new ProcessStartInfo("exiftool.exe",
+                    "-DNGVersion=1.3.0.0 -EXIF:SubfileType=\"Full-resolution Image\" -PhotometricInterpretation=\"Color Filter Array\" " +
+                    "-IFD0:CFARepeatPatternDim=\"2 2\" -IFD0:CFAPattern2=\"2 1 1 0\" -ColorMatrix1=\"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0\" " +
+                    $"-Orientation=Horizontal -UniqueCameraModel=\"{maker} {model}\" " +
+                    $"-o \"{filenameDng}\" \"{filename}\"")
+                { CreateNoWindow = true }).WaitForExit();
+                File.Delete(filename);
             }
         }
     }
