@@ -900,7 +900,7 @@ namespace CameraVision
                     $"-UniqueCameraModel=\"{maker} {model}\" ";
                 if(IsWhiteBalanceEnabled)
                 {
-                    dngMetadata += $"-AnalogBalance=\"{MWBGainRed} {MWBGainGreen} {MWBGainBlue}\"";
+                    dngMetadata += $"-AnalogBalance=\"{MWBGainRed} {MWBGainGreen} {MWBGainBlue}\" ";
                 }
                 Process.Start(new ProcessStartInfo("exiftool.exe", $"{dngMetadata} -o \"{filenameDng}\" \"{filename}\"") { CreateNoWindow = true }).WaitForExit();
                 //File.Delete(filename);
