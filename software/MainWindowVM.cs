@@ -373,7 +373,7 @@ namespace CameraVision
             AddRegister(0x382B, "Y_EVEN_INC");
 
             // DSP top
-            AddRegister(0x5000, "DSP CTRL00");
+            AddRegister(0x5000, "DSP CTRL00");  // Lens Correction (LENC), Defective Pixel Cancellation (DPC), Manual White Balance (MWB)
             AddRegister(0x5001, "DSP CTRL01");  // BLC function enable
             AddRegister(0x5002, "DSP CTRL02");  // Variopixel function enable
             AddRegister(0x5003, "DSP CTRL03");
@@ -387,9 +387,6 @@ namespace CameraVision
             // Pre DSP (Test Pattern Registers)
             AddRegister(0x5E00, "PRE CTRL00");  // Color Bar = 0x84
             AddRegister(0x5E01, "PRE CTRL01");
-
-            // Defective Pixel Cancellation (DPC)
-            AddRegister(0x5000, "ISP CTRL00");
 
             // Window Cut (WINC)
             //AddRegister(0x5A00, "WINC CTRL00");
@@ -442,6 +439,8 @@ namespace CameraVision
             //AddRegister(0x4000, "BLC CTRL00");
             AddRegister(0x4004, "BLC CTRL04 target 15:8");
             AddRegister(0x4005, "BLC CTRL05 target 7:0");
+            AddRegister(0x4011, "BLC CTRL11");  // Enable the entering of a BLC (black level calibration) offset. Default: 0x30
+            AddRegister(0x4013, "BLC CTRL13");  // BLC offset value. Default: 0xCF
 
             // Format Control
             AddRegister(0x4300, "CLIP MAX HI");
@@ -674,7 +673,6 @@ namespace CameraVision
                 Image = new WriteableBitmap(ImageWidth, ImageHeight, 96, 96, _pixelFormat, null);
             }
         }
-
         public DemosaicingAlgorithms CurrentDemosaicingAlgorithm
         {
             get
@@ -687,7 +685,6 @@ namespace CameraVision
                 OnPropertyChanged();
             }
         }
-
         public bool IsWhiteBalanceEnabled
         {
             get
@@ -700,7 +697,6 @@ namespace CameraVision
                 OnPropertyChanged();
             }
         }
-
         public double ExposureMs
         {
             get
@@ -709,7 +705,6 @@ namespace CameraVision
                 return Math.Round((1.0 / 125000.0) * (double)(hts) * (Exposure), 2);
             }
         }
-
         public double FPS
         {
             get
@@ -721,7 +716,6 @@ namespace CameraVision
                 return Math.Round(fps, 2);
             }
         }
-
         public PointCollection HistogramPoints
         {
             get
@@ -734,8 +728,7 @@ namespace CameraVision
                 OnPropertyChanged();
             }
         }
-
-        private static double Saturate(double val, double min, double max)
+        static double Saturate(double val, double min, double max)
         {
             if (val > max)
                 return max;
@@ -743,7 +736,6 @@ namespace CameraVision
                 return min;
             return val;
         }
-
         void CreateHistogram(UInt16[] rawPixels)
         {
             int[] histogramValues = new int[65536];
@@ -765,7 +757,6 @@ namespace CameraVision
             HistogramPoints = new PointCollection(HistogramPoints);
             OnPropertyChanged(nameof(HistogramPoints));
         }
-
         void UpdateProgress(double progress)
         {
             DownloadProgress = progress;
@@ -778,7 +769,6 @@ namespace CameraVision
                 ProgressVisibility = Visibility.Collapsed;
             }
         }
-
         public async Task DownloadImage()
         {
             try
@@ -893,16 +883,27 @@ namespace CameraVision
                     encoder.Frames.Add(bmpFrame);
                     encoder.Save(stream);
                 }
-                // Step 2: Add DNG tags and save as .DNG, delete the RAW TIFF then
+                // Step 2: Add DNG tags and save as .DNG
                 // We use ExifTool https://exiftool.org because of BitmapMetadata limitations
-                // The tool dng_validate.exe available in the DNG SDK can be used to validate the DNG file
-                Process.Start(new ProcessStartInfo("exiftool.exe",
-                    "-DNGVersion=1.3.0.0 -EXIF:SubfileType=\"Full-resolution Image\" -PhotometricInterpretation=\"Color Filter Array\" " +
-                    "-IFD0:CFARepeatPatternDim=\"2 2\" -IFD0:CFAPattern2=\"2 1 1 0\" -ColorMatrix1=\"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0\" " +
-                    $"-Orientation=Horizontal -UniqueCameraModel=\"{maker} {model}\" " +
-                    $"-o \"{filenameDng}\" \"{filename}\"")
-                { CreateNoWindow = true }).WaitForExit();
-                File.Delete(filename);
+                // The tool dng_validate.exe is available with the DNG SDK and can be used to validate the DNG file.
+                // Please Note: The following metadata don't fully characterize the camera. Add your camera calibration data
+                // (LinearizationTable,CalibrationIlluminant1,ColorMatrix1,etc..) to have a DNG profile that renders nice straight out of the box.
+                // A Lens profile can also be built by using "Adobe Lens Profile Creator" or similar software to correct the geometry.
+                string dngMetadata =
+                    "-DNGVersion=1.3.0.0 " +
+                    "-EXIF:SubfileType=\"Full-resolution Image\" " +
+                    "-PhotometricInterpretation=\"Color Filter Array\" " +
+                    "-IFD0:CFARepeatPatternDim=\"2 2\" " +
+                    "-IFD0:CFAPattern2=\"2 1 1 0\" " +
+                    "-ColorMatrix1=\"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0\" " +
+                    "-Orientation=Horizontal " +
+                    $"-UniqueCameraModel=\"{maker} {model}\" ";
+                if(IsWhiteBalanceEnabled)
+                {
+                    dngMetadata += $"-AnalogBalance=\"{MWBGainRed} {MWBGainGreen} {MWBGainBlue}\"";
+                }
+                Process.Start(new ProcessStartInfo("exiftool.exe", $"{dngMetadata} -o \"{filenameDng}\" \"{filename}\"") { CreateNoWindow = true }).WaitForExit();
+                //File.Delete(filename);
             }
         }
     }
