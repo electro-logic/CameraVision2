@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:CameraVision2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="colorDark" Color="#FF0A0A0A" />
+            <SolidColorBrush x:Key="colorLight" Color="#FFF0F0F0" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,9 +1,13 @@
 ﻿<Window x:Class="CameraVision.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
-        Loaded="Window_Loaded" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased"
+        Loaded="Window_Loaded" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" 
+        Background="{StaticResource colorDark}" Foreground="{StaticResource colorLight}"
         Title="Camera Vision v2.0 by Leonardo @ http://electro-logic.blogspot.it" Width="1920" Height="1080" WindowStartupLocation="CenterScreen" IsEnabled="{Binding IsEnabled}">
     <Window.Resources>
         <ResourceDictionary>
+            <Style TargetType="GridSplitter">
+                <Setter Property="Background" Value="{StaticResource colorDark}" />
+            </Style>
             <Style TargetType="Button">
                 <Setter Property="Margin" Value="5" />
             </Style>
@@ -15,6 +19,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -57,7 +62,7 @@
         </DataGrid>
 
         <!-- Settings -->
-        <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="3">
+        <StackPanel Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
             <GroupBox Header="Exposure">
                 <StackPanel Margin="10">
                     <Slider Value="{Binding Exposure}" TickPlacement="BottomRight" Maximum="65535" SmallChange="1" LargeChange="128" />
@@ -76,7 +81,7 @@
             </GroupBox>
             <GroupBox>
                 <GroupBox.Header>
-                    <CheckBox Content="Manual White Balance Gain" IsChecked="{Binding IsWhiteBalanceEnabled}" />
+                    <CheckBox Content="Manual White Balance Gain" IsChecked="{Binding IsWhiteBalanceEnabled}" Foreground="White" />
                 </GroupBox.Header>
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
@@ -143,14 +148,14 @@
             </GroupBox>
 
         </StackPanel>
-        <GroupBox Grid.Column="2" Header="Communication">
+        <GroupBox Grid.Column="3" Header="Communication">
             <Grid Margin="10">
                 <ComboBox ItemsSource="{Binding Communications}" SelectedItem="{Binding Communication, Mode=TwoWay}" VerticalAlignment="Center" />
             </Grid>
         </GroupBox>
 
         <!-- Image -->
-        <GroupBox Grid.Column="1" Header="Image">
+        <GroupBox Grid.Column="2" Header="Image">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -168,8 +173,9 @@
                 <TextBlock Grid.Column="6" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
-        <Image x:Name="image" Source="{Binding Image}" Margin="10" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
-        <ProgressBar Visibility="{Binding ProgressVisibility}" Value="{Binding DownloadProgress}" Grid.Column="1" HorizontalAlignment="Center" Height="25" Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Center" Width="200"/>
-        <TextBlock x:Name="tbInfo" d:Text="Status" Text="" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Image x:Name="image" Source="{Binding Image}" Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
+        <ProgressBar Visibility="{Binding ProgressVisibility}" Value="{Binding DownloadProgress}" Grid.Column="2" HorizontalAlignment="Center" Height="25" Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Center" Width="200"/>
+        <TextBlock x:Name="tbInfo" d:Text="Status" Text="" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
     </Grid>
 </Window>

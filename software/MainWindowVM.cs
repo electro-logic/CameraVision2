@@ -306,8 +306,8 @@ namespace CameraVision
 
             // TODO: Read registers descriptions from extenal file
 
-            //AddRegister(0x0100, "OV8865_SC_CTRL0100");
-            //AddRegister(0x0103, "OV8865_SC_CTRL0103");
+            //AddRegister(0x0100, "SC_CTRL0100");
+            //AddRegister(0x0103, "SC_CTRL0103");
 
             // PLL
             //AddRegister(0x0300, "PLL_CTRL_0");
@@ -889,13 +889,14 @@ namespace CameraVision
                 // Please Note: The following metadata don't fully characterize the camera. Add your camera calibration data
                 // (LinearizationTable,CalibrationIlluminant1,ColorMatrix1,etc..) to have a DNG profile that renders nice straight out of the box.
                 // A Lens profile can also be built by using "Adobe Lens Profile Creator" or similar software to correct the geometry.
+                string identityMatrix = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0";
                 string dngMetadata =
                     "-DNGVersion=1.3.0.0 " +
                     "-EXIF:SubfileType=\"Full-resolution Image\" " +
-                    "-PhotometricInterpretation=\"Color Filter Array\" " +
-                    "-IFD0:CFARepeatPatternDim=\"2 2\" " +
-                    "-IFD0:CFAPattern2=\"2 1 1 0\" " +
-                    "-ColorMatrix1=\"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0\" " +
+                    "-PhotometricInterpretation=\"Color Filter Array\" " +  // Bayer Pattern Image
+                    "-IFD0:CFARepeatPatternDim=\"2 2\" " +                  // Bayer Pattern Size: 2x2
+                    "-IFD0:CFAPattern2=\"2 1 1 0\" " +                      // Bayer Pattern: BGGR
+                    $"-ColorMatrix1=\"{identityMatrix}\" " +
                     "-Orientation=Horizontal " +
                     $"-UniqueCameraModel=\"{maker} {model}\" ";
                 if(IsWhiteBalanceEnabled)
