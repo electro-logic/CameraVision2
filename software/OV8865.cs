@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using static OV8865;
+using System.Windows;
 
 /// <summary>
 /// Represent OV8865 Image Sensor
@@ -28,7 +28,7 @@ public class OV8865
     {
         [Description("JTAG")]
         COM_JTAG = 0,
-        [Description("JTAG+FT232H")] 
+        [Description("JTAG+FT232H")]
         COM_FT232H = 1
     }
     COM _com;
@@ -105,6 +105,12 @@ public class OV8865
         _io.WriteByte(CMD_MIPI_WR_REG);
         _io.WriteUInt16(addr);
         _io.WriteUInt16(val);
+    }
+
+    public void Reset()
+    {
+        _io.WriteByte(CMD_RESET);
+        CheckResponseOk();
     }
 
     public void Config(UInt16 image_width, UInt16 image_height)
@@ -308,6 +314,7 @@ public class OV8865
         if (response != 0xAA)
         {
             Debug.WriteLine($"0xAA expected, got {response.ToString("X")}");
+            MessageBox.Show($"0xAA expected, got {response.ToString("X")}");
         }
     }
 

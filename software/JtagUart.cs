@@ -35,7 +35,7 @@ public class JtagUart : IDisposable, StdIO
         // Add Quartus bin folder to PATH of current process if available
         string quartusRootDir = Environment.GetEnvironmentVariable("QUARTUS_ROOTDIR");
         if (!string.IsNullOrWhiteSpace(quartusRootDir))
-        {            
+        {
             string quartusBinDir = Path.Combine(quartusRootDir, Environment.Is64BitOperatingSystem ? "bin64" : "bin");
             Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + quartusBinDir);
         }
@@ -104,7 +104,7 @@ public class JtagUart : IDisposable, StdIO
             remainingBytes -= readBytes;
         }
         return buffer;
-    }    
+    }
 
     public void Write(byte[] data)
     {
@@ -119,7 +119,7 @@ public class JtagUart : IDisposable, StdIO
             }
             remainingBytes -= writtenBytes;
         }
-    }    
+    }
 
     public void Flush()
     {

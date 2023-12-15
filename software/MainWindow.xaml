@@ -40,8 +40,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Read Camera" Command="{Binding ReadRegistersCommand}" />
-                <Button Content="Read Mipi" Command="{Binding ReadMipiRegistersCommand}" Grid.Column="1" />
-                <Button Content="Load" Command="{Binding LoadRegistersCommand}" Grid.Column="2" />
+                <Button Grid.Column="1" Content="Read Mipi" Command="{Binding ReadMipiRegistersCommand}" />
+                <Button Grid.Column="2" Content="Reset" Command="{Binding ResetCommand}" />
+                <!--<Button Content="Load" Command="{Binding LoadRegistersCommand}"  />-->
                 <!--<Button Content="Save" Command="{Binding SaveRegistersCommand}" Grid.Column="2" />-->
             </Grid>
         </GroupBox>

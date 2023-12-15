@@ -1,0 +1,523 @@
+// Author: Leonardo Tazzini
+
+#include "mipi_camera_config.h"
+
+//#include <stdio.h>			// printf (for debug only)
+#include <unistd.h>				// usleep
+#include "I2C_core.h"			// OC_I2CL_Write, OC_I2CL_Read
+#include "system.h"				// I2C_OPENCORES_CAMERA_BASE
+#include "bit_helper.h"			// ReverseUInt16
+
+typedef struct{
+	uint16_t Addr;
+	uint8_t Data;
+}CameraRegister;
+
+#define TIME_DELAY 		0xFFFF
+
+const CameraRegister CAMERA_REGISTERS[] = {
+		{OV8865_SC_CTRL0103, 0x01}, // software reset
+		{TIME_DELAY, 10},
+		{OV8865_SC_CTRL0100, 0x00}, // software standby
+		{OV8865_SC_CTRL0100, 0x00}, // software standby
+		{OV8865_SC_CTRL0100, 0x00}, // software standby
+		{OV8865_SC_CTRL0100, 0x00}, // software standby
+		{TIME_DELAY, 10},
+		{0x3638, 0xff}, 			// analog control
+
+		//{OV8865_MIPI_SC_CTRL0, 0x72},	// mipi_lane_mode	4 lane
+		//{OV8865_MIPI_SC_CTRL0, 0x32},	// mipi_lane_mode	2 lane
+		{OV8865_MIPI_SC_CTRL0, 0x12},		// mipi_lane_mode	1 lane
+
+		// MCLK		: 25 MHz
+		// PHY_CLK	: 500 MHz (data rate, not clock rate)
+		// PCLK		: 62.5  MHz
+		// SCLK		: 166.666 MHz
+
+		// PLL1
+		// 25 MHz x 20 = 500 MHz
+		// PHY_clk = 500 MHz
+		// PLL1_pix_clk = 500 / 8 = 62.5 MHz
+		// PCLK = 62.5 MHz
+		// PLL1_sys_clk = 500 / 4 / 1 = 125 MHz
+
+		// PLL2
+		// 25 MHz / 2 = 12.5 MHz
+		// PLL2_dac_clk = 12.5 MHz
+
+		{OV8865_PLL_CTRL_A, 0x00}, 	// pll1_prediv0		/1
+		{OV8865_PLL_CTRL_0, 0x00}, 	// pll1_pre_div		/1
+		{OV8865_PLL_CTRL_1, 0x00}, 	// pll1_multiplier[9:8]
+		{OV8865_PLL_CTRL_2, 0x14}, 	// pll1_multiplier[7:0]
+		{OV8865_PLL_CTRL_3, 0x00}, 	// pll1_divm		/1
+		{OV8865_PLL_CTRL_4, 0x03},	// pll1_div_mipi	/8
+		{OV8865_PLL_CTRL_5, 0x01},	// pll1_div_sp		/4
+		{OV8865_PLL_CTRL_6, 0x00},	// pll1_div_sp		/1
+		{OV8865_PLL_CTRL_D, 0x14}, 	// pll2_r_divs
+		{OV8865_PLL_CTRL_E, 0x00}, 	// pll2_r_divs
+		{OV8865_PLL_CTRL_F, 0x04}, 	// pll2_r_divsp
+		{OV8865_PLL_CTRL_12, 0x01}, // pll2_pre_div0, pll2_r_divdac
+
+		{0x031e, 0x0c}, // PLL_CTRL_1E
+		{0x3011, 0x00}, // Pad drive strength b00=1x,b01=2x,b10=3x,b11=4x
+		{0x3015, 0x01}, // PUMP CLK DIV
+
+		{0x3020, 0x93}, // clock normal, 93=pclk/1	9b=pclk/2
+		{0x3022, 0x01}, // pd_mini enable when rst_sync
+		{0x3031, 0x0A}, // 10-bit
+		{0x3106, 0x01}, // PLL sys_pre_div /1, sclk_pdiv /1
+		{0x3305, 0xf1},
+		{0x3308, 0x00},
+		{0x3309, 0x28},
+		{0x330a, 0x00},
+		{0x330b, 0x20},
+		{0x330c, 0x00},
+		{0x330d, 0x00},
+		{0x330e, 0x00},
+		{0x330f, 0x40},
+		{0x3307, 0x04},
+
+		// Analog control
+		{0x3604, 0x04},
+		{0x3602, 0x30},
+		{0x3605, 0x00},
+		{0x3607, 0x20},
+		{0x3608, 0x11},
+		{0x3609, 0x68},
+		{0x360a, 0x40},
+		{0x360c, 0xdd},
+		{0x360e, 0x0c},
+		{0x3610, 0x07},
+		{0x3612, 0x86},
+		{0x3613, 0x58},
+		{0x3614, 0x28},
+		{0x3617, 0x40},
+		{0x3618, 0x5a},
+		{0x3619, 0x9b},
+		{0x361c, 0x00},
+		{0x361d, 0x60},
+		{0x3631, 0x60},
+		{0x3633, 0x10},
+		{0x3634, 0x10},
+		{0x3635, 0x10},
+		{0x3636, 0x10},
+		{0x3641, 0x55}, // mipi_skew0, mipi_skew1
+		{0x3646, 0x86}, // MIPI settings
+		{0x3647, 0x27}, // MIPI settings
+		{0x364a, 0x1b}, // MIPI settings
+		{0x364C, 0x00}, // mipi_slew_rate
+
+		{0x3500, 0x00}, // exposure HH	0x00
+		{0x3501, 0x20}, // exposure H	0x18
+		{0x3502, 0x60}, // exposure L	0x60
+
+		{0x3503, 0x00}, // gain no delay, exposure no delay
+		{0x3508, 0x00}, // gain H
+		{0x3509, 0x80}, // gain L	(6:3 fine grain)
+
+		{0x350A, 0x00}, // AEC DIGIGAIN 13:6
+		{0x350B, 0x00}, // AEC DIGIGAIN 5:0
+
+		// Sensor Control
+		{0x3700, 0x48},
+		{0x3701, 0x18},
+		{0x3702, 0x50},
+		{0x3703, 0x32},
+		{0x3704, 0x28},
+		{0x3705, 0x00},
+		{0x3706, 0x70},
+		{0x3707, 0x08},
+		{0x3708, 0x48},
+		{0x3709, 0x80},
+		{0x370a, 0x01},
+		{0x370b, 0x70},
+		{0x370c, 0x07},
+		{0x3718, 0x14},
+		{0x3719, 0x31},
+		{0x3712, 0x44},
+		{0x3714, 0x12},
+		{0x371e, 0x31},
+		{0x371f, 0x7f},
+		{0x3720, 0x0a},
+		{0x3721, 0x0a},
+		{0x3724, 0x04},
+		{0x3725, 0x04},
+		{0x3726, 0x0c},
+		{0x3728, 0x0a},
+		{0x3729, 0x03},
+		{0x372a, 0x06},
+		{0x372b, 0xa6},
+		{0x372c, 0xa6},
+		{0x372d, 0xa6},
+		{0x372e, 0x0c},
+		{0x372f, 0x20},
+		{0x3730, 0x02},
+		{0x3731, 0x0c},
+		{0x3732, 0x28},
+		{0x3733, 0x10},
+		{0x3734, 0x40},
+		{0x3736, 0x30},
+		{0x373a, 0x04},
+		{0x373b, 0x18},
+		{0x373c, 0x14},
+		{0x373e, 0x06},
+		{0x3755, 0x40},
+		{0x3758, 0x00},
+		{0x3759, 0x4c},
+		{0x375a, 0x0c},
+		{0x375b, 0x26},
+		{0x375c, 0x20},
+		{0x375d, 0x04},
+		{0x375e, 0x00},
+		{0x375f, 0x28},
+		{0x3767, 0x04},
+		{0x3768, 0x04},
+		{0x3769, 0x20},
+		{0x376c, 0x00},
+		{0x376d, 0x00},
+		{0x376a, 0x08},
+		{0x3761, 0x00},
+		{0x3762, 0x00},
+		{0x3763, 0x00},
+		{0x3766, 0xff},
+		{0x376b, 0x42},
+		{0x3772, 0x46},
+		{0x3773, 0x04},
+		{0x3774, 0x2c},
+		{0x3775, 0x13},
+		{0x3776, 0x10},
+		{0x37a0, 0x88},
+		{0x37a1, 0x7a},
+		{0x37a2, 0x7a},
+		{0x37a3, 0x02},
+		{0x37a4, 0x00},
+		{0x37a5, 0x09},
+		{0x37a6, 0x00},
+		{0x37a7, 0x88},
+		{0x37a8, 0xb0},
+		{0x37a9, 0xb0},
+		{0x3760, 0x00},
+		{0x376f, 0x01},
+		{0x37aa, 0x88},
+		{0x37ab, 0x5c},
+		{0x37ac, 0x5c},
+		{0x37ad, 0x55},
+		{0x37ae, 0x19},
+		{0x37af, 0x19},
+		{0x37b0, 0x00},
+		{0x37b1, 0x00},
+		{0x37b2, 0x00},
+		{0x37b3, 0x84},
+		{0x37b4, 0x84},
+		{0x37b5, 0x66},
+		{0x37b6, 0x00},
+		{0x37b7, 0x00},
+		{0x37b8, 0x00},
+		{0x37b9, 0xff},
+
+// don't care , use auto size
+//	     {0x3800, 0x00}, // X start H
+//	     {0x3801, 0x0c}, // X start L
+//	     {0x3802, 0x00}, // Y start H
+//	     {0x3803, 0x0c}, // Y start L
+//	     {0x3804, 0x0c}, // X end H
+//	     {0x3805, 0xd3}, // X end L
+//	     {0x3806, 0x09}, // Y end H
+//	     {0x3807, 0xa3}, // Y end L
+
+//		// 640x480
+//		{0x3808, 0x02}, // X output size H
+//		{0x3809, 0x80}, // X output size L
+//		{0x380a, 0x01}, // Y output size H
+//		{0x380b, 0xE0}, // Y output size L
+
+		// 3264x2448
+		{0x3808, 0x0C}, // X output size H
+		{0x3809, 0xC0}, // X output size L
+		{0x380a, 0x09}, // Y output size H
+		{0x380b, 0x90}, // Y output size L
+
+		// 0x3000 = 12288
+		// fps = 150.000.000 / (12288 * 12288) = 0.9 fps
+
+//		{0x380c, 0x30}, // HTS H
+//		{0x380d, 0x0}, 	// HTS L
+//		{0x380e, 0x30}, // VTS H
+//		{0x380f, 0x0}, 	// VTS L
+
+		// 3264x2448 2 fps (combined with pll settings) 100.000.000 = 10000 x 5000 x 2
+		{0x380c, 0x27}, // HTS H
+		{0x380d, 0x10}, // HTS L
+		{0x380e, 0x13}, // VTS H
+		{0x380f, 0x88}, // VTS L
+// HTS = 10000
+// VTS = 5000
+
+//	   // for 2 lane
+//		  // 3264@2448 4 fps (combined with pll settings) 100000000 = 5000 x 5000 x 4
+//	   {0x380c, 0x13}, // HTS H
+//	   {0x380d, 0x88}, // HTS L
+//	   {0x380e, 0x13}, // VTS H
+//	   {0x380f, 0x88}, // VTS L
+
+		{0x3810, 0x00}, // ISP X win H
+		{0x3811, 0x04}, // ISP X win L
+		{0x3813, 0x02}, // ISP Y win L
+
+		{0x3814, 0x01}, // X inc odd
+		{0x3815, 0x01}, // X inc even
+		{0x3820, 0x06}, // flip on
+
+		{0x3821, 0x00}, // hsync_en_o, fst_vbin, mirror on  HD res
+
+		{0x382a, 0x01}, // Y inc odd
+		{0x382b, 0x01}, // Y inc even
+
+		{OV8865_BLC_NUM_OPTION, 8}, 	// ablc_use_num[5:1]
+		{OV8865_ZLINE_NUM_OPTION, 2},	// zline_use_num[5:1]
+
+		{0x3837, 0x18}, // vts_add_dis, cexp_gt_vts_offs=8
+		{0x3841, 0xff}, // auto size
+		{0x3846, 0x48}, // Y/X boundary pixel number for auto size mode
+		{0x3f08, 0x16},	// PSRAM control
+
+		// BLC Control
+		{0x4000, 0xf1}, // our range trig en, format chg en, gan chg en, exp chg en, median en
+		{0x4001, 0x04}, // left 32 column, final BLC offset limitation enable
+		{0x4005, 0x10}, // BLC target
+		{0x400b, 0x0c}, // start line =0, offset limitation en, cut range function en
+		{0x400d, 0x10}, // offset trigger threshold
+		{0x401b, 0x00},	// debug mode
+		{0x401d, 0x00}, // debug mode
+		{0x4020, 0x02}, // anchor left start H
+		{0x4021, 0x40}, // anchor left start L
+		{0x4022, 0x03}, // anchor left end H
+		{0x4023, 0x3f}, // anchor left end L
+		{0x4024, 0x07}, // anchor right start H
+		{0x4025, 0xc0}, // anchor right start L
+		{0x4026, 0x08}, // anchor right end H
+		{0x4027, 0xbf}, // anchor right end L
+		{0x4028, 0x00}, // top zero line start
+		{0x4029, 0x02}, // top zero line number
+		{0x402a, 0x04}, // top black line start
+		{0x402b, 0x04}, // top black line number
+		{0x402c, 0x02}, // bottom zero line start
+		{0x402d, 0x02}, // bottom zero line number
+		{0x402e, 0x08}, // bottom black line start
+		{0x402f, 0x02}, // bottom black line number
+		{0x401f, 0x00}, // anchor one disable
+		{0x4034, 0x3f}, // limitation BLC offset
+		{0x4300, 0xff}, // clip max H
+		{0x4301, 0x00}, // clip min H
+		{0x4302, 0x0f}, // clip min L/clip max L
+		{0x4500, 0x68}, // ADC sync control
+		{0x4503, 0x10}, // ADC sync control
+		{0x4601, 0x10}, // V FIFO control
+		{OV8865_MIPI_CTRL0, 0x4C}, // MIPI CTRL00, Enable clock lane stop at hblk when in sleep mode, Enable gate clock lane only when vblanking
+
+		// clock prepare  50+ Tui*ui_clk_prepare_min(0) : 50 ns
+		{0x481f, 70}, // clk_prepare_min
+
+		{OV8865_MIPI_PCLK_PERIOD, 0x16}, // clock period
+		{OV8865_MIPI_LANE_SEL01, 0x10}, // lane select
+		{OV8865_MIPI_LANE_SEL23, 0x32}, // lane select
+		{0x4b00, 0x2a}, // LVDS settings
+		{0x4b0d, 0x00}, // LVDS settings
+		{0x4d00, 0x04}, // temperature sensor
+		{0x4d01, 0x18}, // temperature sensor
+		{0x4d02, 0xc3}, // temperature sensor
+		{0x4d03, 0xff}, // temperature sensor
+		{0x4d04, 0xff}, // temperature sensor
+		{0x4d05, 0xff}, // temperature sensor
+		{0x5000, 0x06}, // LENC off, MWB off, BPC on, WPC on [MWB ON in terasic examples]
+		{0x5001, 0x01}, // BLC on
+		{0x5002, 0x08}, // vario pixel (binning) off
+		{OV8865_VAP_CTRL1, 0x00},
+		{0x5e00, 0x00}, // test pattern off
+
+		{0x5018, 0x15}, // Red MWB gain
+		{0x501A, 0x14}, // Green MWB gain
+		{0x501C, 0x21}, // Blue MWB gain
+
+		{0x5e01, 0x41}, // window cut enable
+
+		{TIME_DELAY, 10},
+
+		// DPC (Defective pixel cancellation) control
+		{0x5780, 0xfc},
+		{0x5781, 0xdf},
+		{0x5782, 0x3f},
+		{0x5783, 0x08},
+		{0x5784, 0x0c},
+		{0x5786, 0x20},
+		{0x5787, 0x40},
+		{0x5788, 0x08},
+		{0x5789, 0x08},
+		{0x578a, 0x02},
+		{0x578b, 0x01},
+		{0x578c, 0x01},
+		{0x578d, 0x0c},
+		{0x578e, 0x02},
+		{0x578f, 0x01},
+		{0x5790, 0x01},
+
+		// LENC (Lens correction)
+		{0x5800, 0x1d},
+		{0x5801, 0x0e},
+		{0x5802, 0x0c},
+		{0x5803, 0x0c},
+		{0x5804, 0x0f},
+		{0x5805, 0x22},
+		{0x5806, 0x0a},
+		{0x5807, 0x06},
+		{0x5808, 0x05},
+		{0x5809, 0x05},
+		{0x580a, 0x07},
+		{0x580b, 0x0a},
+		{0x580c, 0x06},
+		{0x580d, 0x02},
+		{0x580e, 0x00},
+		{0x580f, 0x00},
+		{0x5810, 0x03},
+		{0x5811, 0x07},
+		{0x5812, 0x06},
+		{0x5813, 0x02},
+		{0x5814, 0x00},
+		{0x5815, 0x00},
+		{0x5816, 0x03},
+		{0x5817, 0x07},
+		{0x5818, 0x09},
+		{0x5819, 0x06},
+		{0x581a, 0x04},
+		{0x581b, 0x04},
+		{0x581c, 0x06},
+		{0x581d, 0x0a},
+		{0x581e, 0x19},
+		{0x581f, 0x0d},
+		{0x5820, 0x0b},
+		{0x5821, 0x0b},
+		{0x5822, 0x0e},
+		{0x5823, 0x22},
+		{0x5824, 0x23},
+		{0x5825, 0x28},
+		{0x5826, 0x29},
+		{0x5827, 0x27},
+		{0x5828, 0x13},
+		{0x5829, 0x26},
+		{0x582a, 0x33},
+		{0x582b, 0x32},
+		{0x582c, 0x33},
+		{0x582d, 0x16},
+		{0x582e, 0x14},
+		{0x582f, 0x30},
+		{0x5830, 0x31},
+		{0x5831, 0x30},
+		{0x5832, 0x15},
+		{0x5833, 0x26},
+		{0x5834, 0x23},
+		{0x5835, 0x21},
+		{0x5836, 0x23},
+		{0x5837, 0x05},
+		{0x5838, 0x36},
+		{0x5839, 0x27},
+		{0x583a, 0x28},
+		{0x583b, 0x26},
+		{0x583c, 0x24},
+		{0x583d, 0xdf},
+
+		{OV8865_SC_CTRL0100, 0x01}, //; wake up, streaming
+};
+
+uint8_t mipi_camera_reg_read(uint16_t Addr)
+{
+	uint8_t value;
+	OC_I2CL_Read(I2C_OPENCORES_CAMERA_BASE, MIPI_I2C_ADDR, Addr, (uint8_t *)&value, sizeof(value));
+	return (value);
+}
+
+bool mipi_camera_reg_write(uint16_t Addr, uint8_t Value)
+{
+	return OC_I2CL_Write(I2C_OPENCORES_CAMERA_BASE, MIPI_I2C_ADDR, Addr, (uint8_t *)&Value, sizeof(Value));
+}
+
+void mipi_camera_binning(uint8_t level)
+{
+	// TODO: Enable VarioPixel?
+	if(level <= 1) level = 1;
+	if(level >= 3) level = 3;
+	mipi_camera_reg_write(OV8865_SC_CTRL0100, 0x00);
+	if(level == 1){
+		// no binning
+		mipi_camera_reg_write(0x3814, 0x01);
+		mipi_camera_reg_write(0x3815, 0x01);
+		mipi_camera_reg_write(0x382a, 0x01);
+		mipi_camera_reg_write(0x382b, 0x01);
+		mipi_camera_reg_write(OV8865_BLC_NUM_OPTION, 8);
+		mipi_camera_reg_write(OV8865_ZLINE_NUM_OPTION, 2);
+	}
+	else if(level == 2){
+		// 2x2 binning
+		mipi_camera_reg_write(0x3814, 0x03);
+		mipi_camera_reg_write(0x3815, 0x01);
+		mipi_camera_reg_write(0x382a, 0x03);
+		mipi_camera_reg_write(0x382b, 0x01);
+		mipi_camera_reg_write(OV8865_BLC_NUM_OPTION, 4);
+		mipi_camera_reg_write(OV8865_ZLINE_NUM_OPTION, 1);
+	}
+	else if(level == 3){
+		// 4x4 binning
+		mipi_camera_reg_write(0x3814, 0x07);
+		mipi_camera_reg_write(0x3815, 0x01);
+		mipi_camera_reg_write(0x382a, 0x07);
+		mipi_camera_reg_write(0x382b, 0x01);
+		mipi_camera_reg_write(OV8865_BLC_NUM_OPTION, 8);
+		mipi_camera_reg_write(OV8865_ZLINE_NUM_OPTION, 2);
+	}
+	usleep(10000);
+	mipi_camera_reg_write(OV8865_SC_CTRL0100, 0x01);
+}
+
+bool mipi_camera_init(void)
+{
+	const int num = sizeof(CAMERA_REGISTERS)/sizeof(CameraRegister);
+	for(int i=0; i<num; i++){
+		if (CAMERA_REGISTERS[i].Addr == TIME_DELAY)
+		{
+			usleep(CAMERA_REGISTERS[i].Data * 100);
+		}
+		else
+		{
+			if(!mipi_camera_reg_write(CAMERA_REGISTERS[i].Addr, CAMERA_REGISTERS[i].Data))
+				return false;
+		}
+	}
+	return true;
+}
+
+uint16_t mipi_camera_reg_read_VCM149C()
+{
+	uint16_t focus;
+	OC_I2C_Read_Continue(I2C_OPENCORES_CAMERA_BASE, MIPI_AF_I2C_ADDR, (uint8_t *)&focus, sizeof(focus));
+	return ReverseUInt16(focus);
+}
+
+bool mipi_camera_reg_write_VCM149C(uint16_t dacValue)
+{
+	// Constraints DAC value into [0-1023] range
+	if (dacValue > 1023)
+	{
+		dacValue = 1023;
+	}
+	if (dacValue < 0)
+	{
+		dacValue = 0;
+	}
+	uint8_t msb = (dacValue >> 4)&0x00FF;
+	uint8_t lsb = (dacValue << 4 )&0x00F0;
+	lsb += 0x06;
+	lsb += 0x06;
+	if(!OC_I2C_Write(I2C_OPENCORES_CAMERA_BASE, MIPI_AF_I2C_ADDR, msb, (uint8_t *)&lsb, sizeof(lsb)))
+		return false;
+	usleep(1000);
+	return true;
+}

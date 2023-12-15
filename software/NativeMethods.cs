@@ -55,7 +55,7 @@ public static class NativeMethods
     // jtagatlantic_scan_thread(struct JTAGATLANTIC *)
 
     [DllImport("kernel32.dll", EntryPoint = "LoadLibraryW", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-    public static extern IntPtr LoadLibrary(string fileName);    
+    public static extern IntPtr LoadLibrary(string fileName);
 
     /// <summary>
     /// Open a JTAG Atlantic UART

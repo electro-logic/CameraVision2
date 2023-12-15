@@ -49,7 +49,7 @@ namespace CameraVision
                             r1 = imageRaw[(y - 1) * imageWidth + (x - 1)];
                             r2 = imageRaw[(y + 1) * imageWidth + (x - 1)];
                             r3 = imageRaw[(y - 1) * imageWidth + (x + 1)];
-                            r4 = imageRaw[(y + 1) * imageWidth + (x + 1)];                            
+                            r4 = imageRaw[(y + 1) * imageWidth + (x + 1)];
                             r = (UInt16)((r1 + r2 + r3 + r4) / 4);
                             g = (UInt16)((g1 + g2 + g3 + g4) / 4);
                             b = color;

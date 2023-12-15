@@ -2,16 +2,15 @@
 
 using System.Collections.Generic;
 
-namespace CameraVision
-{
-    public class VideoSetting
-    {
-        public string Description { get; set; }
-        public List<Register> Registers { get; set; }
+namespace CameraVision;
 
-        public override string ToString()
-        {
-            return Description;
-        }
+public class VideoSetting
+{
+    public string Description { get; set; }
+    public List<Register> Registers { get; set; }
+
+    public override string ToString()
+    {
+        return Description;
     }
 }
