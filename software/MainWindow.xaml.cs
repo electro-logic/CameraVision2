@@ -17,7 +17,7 @@ public partial class MainWindow : System.Windows.Window
     void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
     {
         _vm.ReadRegisters();
-        _vm.ReadMipiRegisters();
+        //_vm.ReadMipiRegisters();
     }
     void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
@@ -29,12 +29,12 @@ public partial class MainWindow : System.Windows.Window
         tbInfo.Text = $"X: {x} Y: {y}";
         try
         {
-            if (_vm._rawPixels != null)
+            if (_vm.RawPixels != null)
             {
                 int index = (int)(x + _vm.Image.Width * y);
-                if (index < _vm._rawPixels.Length)
+                if (index < _vm.RawPixels.Length)
                 {
-                    var raw = _vm._rawPixels[index];
+                    var raw = _vm.RawPixels[index];
                     tbInfo.Text += $" - Raw10: {raw}";
                 }
             }

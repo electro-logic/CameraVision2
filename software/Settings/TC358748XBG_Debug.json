@@ -1,0 +1,18 @@
+﻿[
+  {
+    "Address": "0xE0",
+    "Description": "DBG_LCNT"
+  },
+  {
+    "Address": "0xE2",
+    "Description": "DBG_WIDTH"
+  },
+  {
+    "Address": "0xE4",
+    "Description": "DBG_VBlank"
+  },
+  {
+    "Address": "0xE8",
+    "Description": "DBG_Data"
+  }
+]

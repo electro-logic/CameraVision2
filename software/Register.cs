@@ -2,25 +2,35 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Text.Json.Serialization;
 
 public partial class Register : ObservableObject
 {
+    [property: JsonConverter(typeof(HexStringJsonConverter))]
     [ObservableProperty]
     UInt16 _address;
+
+    [property: JsonConverter(typeof(HexStringJsonConverter))]
     [ObservableProperty]
-    string _value;
+    UInt16 _value;
+
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [ObservableProperty]
     string _description;
+
+    public Register() { }
+
     public Register(UInt16 address, UInt16 value)
     {
-        _address = address;
-        _value = value.ToString("X");
-        _description = "";
+        Address = address;
+        Value = value;
+        Description = null;
     }
-    public Register(UInt16 address, string value, string description = "")
+    public Register(UInt16 address, UInt16 value, string description = "")
     {
-        _address = address;
-        _value = value;
-        _description = description;
+        Address = address;
+        Value = value;
+        Description = description;
     }
+    public override string ToString() => $"0x{Address.ToString("X")}: 0x{Value.ToString("X")}";
 }

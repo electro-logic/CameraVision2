@@ -1,0 +1,166 @@
+﻿[
+  {
+    "Address": "0x300A",
+    "Description": "CHIP ID 23:16"
+  },
+  {
+    "Address": "0x300B",
+    "Description": "CHIP ID 15:8"
+  },
+  {
+    "Address": "0x300C",
+    "Description": "CHIP ID 7:0"
+  },
+  {
+    "Address": "0x3D81",
+    "Description": "OTP_REG85"
+  },
+  {
+    "Address": "0x5A00",
+    "Description": "WINC CTRL00"
+  },
+  {
+    "Address": "0x5A01",
+    "Description": "WINC CTRL01"
+  },
+  {
+    "Address": "0x5A02",
+    "Description": "WINC CTRL02"
+  },
+  {
+    "Address": "0x5A03",
+    "Description": "WINC CTRL03"
+  },
+  {
+    "Address": "0x5A04",
+    "Description": "WINC CTRL04"
+  },
+  {
+    "Address": "0x5A05",
+    "Description": "WINC CTRL05"
+  },
+  {
+    "Address": "0x5A06",
+    "Description": "WINC CTRL06"
+  },
+  {
+    "Address": "0x5A07",
+    "Description": "WINC CTRL07"
+  },
+  {
+    "Address": "0x5A08",
+    "Description": "WINC CTRL08"
+  },
+  {
+    "Address": "0x100",
+    "Description": "SC_CTRL0100"
+  },
+  {
+    "Address": "0x103",
+    "Description": "SC_CTRL0103"
+  },
+  {
+    "Address": "0x3810",
+    "Description": "H_WIN_OFF 15:8"
+  },
+  {
+    "Address": "0x3811",
+    "Description": "H_WIN_OFF 7:0"
+  },
+  {
+    "Address": "0x3812",
+    "Description": "V_WIN_OFF 11:8"
+  },
+  {
+    "Address": "0x3813",
+    "Description": "V_WIN_OFF 7:0"
+  },
+  {
+    "Address": "0x4302",
+    "Description": "CLIP LO"
+  },
+  {
+    "Address": "0x4303",
+    "Description": "FORMAT CTRL3"
+  },
+  {
+    "Address": "0x4304",
+    "Description": "FORMAT CTRL4"
+  },
+  {
+    "Address": "0x4308",
+    "Description": "TEST X START HIGH"
+  },
+  {
+    "Address": "0x4309",
+    "Description": "TEST X START LOW"
+  },
+  {
+    "Address": "0x430A",
+    "Description": "TEST Y START HIGH"
+  },
+  {
+    "Address": "0x430B",
+    "Description": "TEST Y START LOW"
+  },
+  {
+    "Address": "0x430C",
+    "Description": "TEST WIDTH HIGH"
+  },
+  {
+    "Address": "0x430D",
+    "Description": "TEST WIDTH LOW"
+  },
+  {
+    "Address": "0x430E",
+    "Description": "TEST HEIGHT HIGH"
+  },
+  {
+    "Address": "0x430F",
+    "Description": "TEST HEIGHT LOW"
+  },
+  {
+    "Address": "0x4300",
+    "Description": "CLIP MAX HI"
+  },
+  {
+    "Address": "0x4301",
+    "Description": "CLIP MIN HI"
+  },
+  {
+    "Address": "0x4320",
+    "Description": "TEST PATTERN CTRL"
+  },
+  {
+    "Address": "0x4322",
+    "Description": "SOLID COLOR B"
+  },
+  {
+    "Address": "0x4323",
+    "Description": "SOLID COLOR B"
+  },
+  {
+    "Address": "0x4324",
+    "Description": "SOLID COLOR GB"
+  },
+  {
+    "Address": "0x4325",
+    "Description": "SOLID COLOR GB"
+  },
+  {
+    "Address": "0x4326",
+    "Description": "SOLID COLOR R"
+  },
+  {
+    "Address": "0x4327",
+    "Description": "SOLID COLOR R"
+  },
+  {
+    "Address": "0x4328",
+    "Description": "SOLID COLOR GR"
+  },
+  {
+    "Address": "0x4329",
+    "Description": "SOLID COLOR GR"
+  }
+]

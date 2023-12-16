@@ -1,0 +1,114 @@
+﻿[
+  {
+    "Address": "0x300",
+    "Description": "PLL_CTRL_0"
+  },
+  {
+    "Address": "0x301",
+    "Description": "PLL_CTRL_1"
+  },
+  {
+    "Address": "0x302",
+    "Description": "PLL_CTRL_2"
+  },
+  {
+    "Address": "0x303",
+    "Description": "PLL_CTRL_3"
+  },
+  {
+    "Address": "0x304",
+    "Description": "PLL_CTRL_4"
+  },
+  {
+    "Address": "0x305",
+    "Description": "PLL_CTRL_5"
+  },
+  {
+    "Address": "0x306",
+    "Description": "PLL_CTRL_6"
+  },
+  {
+    "Address": "0x307",
+    "Description": "PLL_CTRL_7"
+  },
+  {
+    "Address": "0x308",
+    "Description": "PLL_CTRL_8"
+  },
+  {
+    "Address": "0x309",
+    "Description": "PLL_CTRL_9"
+  },
+  {
+    "Address": "0x30A",
+    "Description": "PLL_CTRL_A"
+  },
+  {
+    "Address": "0x30B",
+    "Description": "PLL_CTRL_B"
+  },
+  {
+    "Address": "0x30C",
+    "Description": "PLL_CTRL_C"
+  },
+  {
+    "Address": "0x30D",
+    "Description": "PLL_CTRL_D"
+  },
+  {
+    "Address": "0x30E",
+    "Description": "PLL_CTRL_E"
+  },
+  {
+    "Address": "0x30F",
+    "Description": "PLL_CTRL_F"
+  },
+  {
+    "Address": "0x310",
+    "Description": "PLL_CTRL_10"
+  },
+  {
+    "Address": "0x311",
+    "Description": "PLL_CTRL_11"
+  },
+  {
+    "Address": "0x312",
+    "Description": "PLL_CTRL_12"
+  },
+  {
+    "Address": "0x31B",
+    "Description": "PLL_CTRL_1B"
+  },
+  {
+    "Address": "0x31C",
+    "Description": "PLL_CTRL_1C"
+  },
+  {
+    "Address": "0x31E",
+    "Description": "PLL_CTRL_1E"
+  },
+  {
+    "Address": "0x3106",
+    "Description": "SCLK_DIV, SCLK_PRE_DIV"
+  },
+  {
+    "Address": "0x3007",
+    "Description": "R ISPOUT BITSEL"
+  },
+  {
+    "Address": "0x3011",
+    "Description": "PAD"
+  },
+  {
+    "Address": "0x3020",
+    "Description": "PCLK_DIV"
+  },
+  {
+    "Address": "0x3032",
+    "Description": "MUX PLL_SYS_CLK"
+  },
+  {
+    "Address": "0x3033",
+    "Description": "MUX DAC_SYS_CLK"
+  }
+]

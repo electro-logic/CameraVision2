@@ -1,0 +1,94 @@
+﻿[
+  {
+    "Address": "0x0",
+    "Description": "ChipID"
+  },
+  {
+    "Address": "0x2",
+    "Description": "SysCtl"
+  },
+  {
+    "Address": "0x4",
+    "Description": "ConfCtl"
+  },
+  {
+    "Address": "0x6",
+    "Description": "FiFoCtl"
+  },
+  {
+    "Address": "0x8",
+    "Description": "DataFmt"
+  },
+  {
+    "Address": "0xC",
+    "Description": "MclkCtl"
+  },
+  {
+    "Address": "0x16",
+    "Description": "PLLCtl0"
+  },
+  {
+    "Address": "0x18",
+    "Description": "PLLCtl1"
+  },
+  {
+    "Address": "0x20",
+    "Description": "CLKCtrl"
+  },
+  {
+    "Address": "0x22",
+    "Description": "WordCnt"
+  },
+  {
+    "Address": "0x60",
+    "Description": "PHYTimDly"
+  },
+  {
+    "Address": "0x64",
+    "Description": "CSIStatus"
+  },
+  {
+    "Address": "0x6A",
+    "Description": "CSIDID"
+  },
+  {
+    "Address": "0x80",
+    "Description": "FrmErrCnt"
+  },
+  {
+    "Address": "0x82",
+    "Description": "CRCErrCnt"
+  },
+  {
+    "Address": "0x84",
+    "Description": "CorErrCnt"
+  },
+  {
+    "Address": "0x86",
+    "Description": "HdrErrCnt"
+  },
+  {
+    "Address": "0x88",
+    "Description": "EIDErrCnt"
+  },
+  {
+    "Address": "0x8A",
+    "Description": "CtlErrCnt"
+  },
+  {
+    "Address": "0x8C",
+    "Description": "SotErrCnt"
+  },
+  {
+    "Address": "0x8E",
+    "Description": "SynErrCnt"
+  },
+  {
+    "Address": "0x90",
+    "Description": "MDLErrCnt"
+  },
+  {
+    "Address": "0xF8",
+    "Description": "FIFOStatus"
+  }
+]
