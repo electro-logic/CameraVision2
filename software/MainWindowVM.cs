@@ -79,7 +79,14 @@ public partial class MainWindowVM : ObservableObject
         }
         Communication = OV8865.COM.COM_JTAG;
         VideoSettings = JsonSerializer.Deserialize<List<VideoSetting>>(File.ReadAllText(@"Settings\CameraSettings.json"));
-        CurrentVideoSetting = VideoSettings[11];
+        
+        // Hardcoded default settings
+        CurrentVideoSetting = VideoSettings[6];
+        Focus = 160;
+        IsWhiteBalanceEnabled = true;
+        MWBGainBlue = MWBGainGreen = MWBGainRed = 1.0;
+        Communication = OV8865.COM.COM_FT232H;
+
         // Check Camera with a Color Bar
         //await Task.Delay(250);
         //_sensor.WriteReg(0x5E00, 0x80); // Color Bar
@@ -361,64 +368,77 @@ public partial class MainWindowVM : ObservableObject
     }
 
     [RelayCommand]
-    public void SaveImage()
+    public void SaveTiffImage()
     {
         var dlg = new SaveFileDialog();
         dlg.FileName = "camera_" + DateTime.Now.ToString("hhmmss") + ".tiff";
         dlg.DefaultExt = ".tiff";
         dlg.Filter = "TIFF image (.tiff)|*.tiff";
-        var res = dlg.ShowDialog();
-        if (res == true)
+        if (dlg.ShowDialog() == true)
         {
-            // Save Color
-            string filename = dlg.FileName;
-            using (var stream = new FileStream(filename, FileMode.Create))
-            {
-                var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.Zip };
-                BitmapFrame bmpFrame = BitmapFrame.Create(Image, null, GetTIFFMetadataD8M(), null);
-                encoder.Frames.Add(bmpFrame);
-                encoder.Save(stream);
-            }
-            // Save RAW (two steps)
-            // Step 1: Create a RAW TIFF file
-            filename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_raw.tiff");
-            var filenameDng = Path.ChangeExtension(filename, ".dng");
-            using (var stream = new FileStream(filename, FileMode.Create))
-            {
-                var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.Zip };
-                var frame = BitmapSource.Create(Image.PixelWidth, Image.PixelHeight, 96.0, 96.0, PixelFormats.Gray16, null, _rawPixels, Image.PixelWidth * 2);
-                var metadata = GetTIFFMetadataD8M();
-                //metadata.SetQuery("/ifd/{ushort=262}", 32803);                              // PhotometricInterpretation    32803 = CFA (Color Filter Array)
-                //metadata.SetQuery("/ifd/{ushort=33421}", new UInt16[] { 2, 2 });            // CFARepeatPatternDim          2x2
-                //metadata.SetQuery("/ifd/{ushort=33422}", new byte[] { 2, 1, 1, 0 });        // CFAPattern2                  BGGR
-                //metadata.SetQuery("/ifd/xmp/tiff:PhotometricInterpretation", "32803");
-                BitmapFrame bmpFrame = BitmapFrame.Create(frame, null, metadata, null);
-                encoder.Frames.Add(bmpFrame);
-                encoder.Save(stream);
-            }
-            // Step 2: Add DNG tags and save as .DNG
-            // We use ExifTool https://exiftool.org because of BitmapMetadata limitations
-            // The tool dng_validate.exe is available with the DNG SDK and can be used to validate the DNG file.
-            // Please Note: The following metadata don't fully characterize the camera. Add your camera calibration data
-            // (LinearizationTable,CalibrationIlluminant1,ColorMatrix1,etc..) to have a DNG profile that renders nice straight out of the box.
-            // A Lens profile can also be built by using "Adobe Lens Profile Creator" or similar software to correct the geometry.
-            string identityMatrix = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0";
-            string dngMetadata =
-                "-DNGVersion=1.3.0.0 " +
-                "-EXIF:SubfileType=\"Full-resolution Image\" " +
-                "-PhotometricInterpretation=\"Color Filter Array\" " +  // Bayer Pattern Image
-                "-IFD0:CFARepeatPatternDim=\"2 2\" " +                  // Bayer Pattern Size: 2x2
-                "-IFD0:CFAPattern2=\"2 1 1 0\" " +                      // Bayer Pattern: BGGR
-                $"-ColorMatrix1=\"{identityMatrix}\" " +
-                "-Orientation=Horizontal " +
-                $"-UniqueCameraModel=\"{maker} {model}\" ";
-            if (IsWhiteBalanceEnabled)
-            {
-                dngMetadata += $"-AnalogBalance=\"{MWBGainRed} {MWBGainGreen} {MWBGainBlue}\" ";
-            }
-            Process.Start(new ProcessStartInfo("exiftool.exe", $"{dngMetadata} -o \"{filenameDng}\" \"{filename}\"") { CreateNoWindow = true }).WaitForExit();
-            //File.Delete(filename);
+            SaveTiff(dlg.FileName);
         }
+    }
+
+    [RelayCommand]
+    public void SaveDngImage()
+    {
+        var dlg = new SaveFileDialog();
+        dlg.FileName = "camera_" + DateTime.Now.ToString("hhmmss") + ".dng";
+        dlg.DefaultExt = ".dng";
+        dlg.Filter = "DNG image (.dng)|*.dng";
+        if (dlg.ShowDialog() == true)
+        {
+            SaveDng(dlg.FileName);
+        }
+    }
+
+    void SaveTiff(string filename)
+    {
+        using (var stream = new FileStream(filename, FileMode.Create))
+        {
+            var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.Zip };
+            BitmapFrame bmpFrame = BitmapFrame.Create(Image, null, GetTIFFMetadataD8M(), null);
+            encoder.Frames.Add(bmpFrame);
+            encoder.Save(stream);
+        }
+    }
+
+    void SaveDng(string filename)
+    {
+        // Save RAW (two steps)
+        // Step 1: Create a RAW TIFF file
+        var filenameTiff = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_raw.tiff");
+        using (var stream = new FileStream(filenameTiff, FileMode.Create))
+        {
+            var encoder = new TiffBitmapEncoder() { Compression = TiffCompressOption.None };
+            var frame = BitmapSource.Create(Image.PixelWidth, Image.PixelHeight, 96.0, 96.0, PixelFormats.Gray16, null, RawPixels, Image.PixelWidth * 2);
+            BitmapFrame bmpFrame = BitmapFrame.Create(frame, null, GetTIFFMetadataD8M(), null);
+            encoder.Frames.Add(bmpFrame);
+            encoder.Save(stream);
+        }
+        // Step 2: Add DNG tags and save as .DNG
+        // We use ExifTool https://exiftool.org because of BitmapMetadata limitations
+        // The tool dng_validate.exe is available with the DNG SDK and can be used to validate the DNG file.
+        // Please Note: The following metadata don't fully characterize the camera. Add your camera calibration data
+        // (LinearizationTable,CalibrationIlluminant1,ColorMatrix1,etc..) to have a DNG profile that renders nice straight out of the box.
+        // A Lens profile can also be built by using "Adobe Lens Profile Creator" or similar software to correct the geometry.
+        string identityMatrix = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0";
+        string dngMetadata =
+            "-DNGVersion=1.3.0.0 " +
+            "-EXIF:SubfileType=\"Full-resolution Image\" " +
+            "-PhotometricInterpretation=\"Color Filter Array\" " +  // Bayer Pattern Image
+            "-IFD0:CFARepeatPatternDim=\"2 2\" " +                  // Bayer Pattern Size: 2x2
+            "-IFD0:CFAPattern2=\"2 1 1 0\" " +                      // Bayer Pattern: BGGR
+            $"-ColorMatrix1=\"{identityMatrix}\" " +
+            "-Orientation=Horizontal " +
+            $"-UniqueCameraModel=\"{maker} {model}\" ";
+        if (IsWhiteBalanceEnabled)
+        {
+            dngMetadata += $"-AnalogBalance=\"{MWBGainRed} {MWBGainGreen} {MWBGainBlue}\" ";
+        }
+        Process.Start(new ProcessStartInfo("exiftool.exe", $"{dngMetadata} -o \"{filename}\" \"{filenameTiff}\"") { CreateNoWindow = true }).WaitForExit();
+        //File.Delete(filenameTiff);
     }
 
     [RelayCommand]

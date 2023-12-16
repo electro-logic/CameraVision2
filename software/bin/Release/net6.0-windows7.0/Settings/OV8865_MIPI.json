@@ -1,0 +1,50 @@
+﻿[
+  {
+    "Address": "0x3031",
+    "Description": "MIPI BIT SEL REG31"
+  },
+  {
+    "Address": "0x4801",
+    "Description": "MIPI CTRL01"
+  },
+  {
+    "Address": "0x4802",
+    "Description": "MIPI CTRL02"
+  },
+  {
+    "Address": "0x4803",
+    "Description": "MIPI CTRL03"
+  },
+  {
+    "Address": "0x4804",
+    "Description": "MIPI CTRL04"
+  },
+  {
+    "Address": "0x4805",
+    "Description": "MIPI CTRL05"
+  },
+  {
+    "Address": "0x4806",
+    "Description": "MIPI CTRL06"
+  },
+  {
+    "Address": "0x4807",
+    "Description": "MIPI CTRL07"
+  },
+  {
+    "Address": "0x4808",
+    "Description": "MIPI CTRL08"
+  },
+  {
+    "Address": "0x4813",
+    "Description": "MIPI CTRL013"
+  },
+  {
+    "Address": "0x4814",
+    "Description": "MIPI CTRL014"
+  },
+  {
+    "Address": "0x4815",
+    "Description": "MIPI CTRL015"
+  }
+]

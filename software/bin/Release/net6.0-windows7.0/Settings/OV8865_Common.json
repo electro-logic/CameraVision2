@@ -1,0 +1,318 @@
+﻿[
+  {
+    "Address": "0x3808",
+    "Description": "H_OUTPUT_SIZE 11:8"
+  },
+  {
+    "Address": "0x3809",
+    "Description": "H_OUTPUT_SIZE 7:0"
+  },
+  {
+    "Address": "0x380A",
+    "Description": "V_OUTPUT_SIZE 11:8"
+  },
+  {
+    "Address": "0x380B",
+    "Description": "V_OUTPUT_SIZE 7:0"
+  },
+  {
+    "Address": "0x380C",
+    "Description": "TIMING_HTS 15:8"
+  },
+  {
+    "Address": "0x380D",
+    "Description": "TIMING_HTS 7:0"
+  },
+  {
+    "Address": "0x380E",
+    "Description": "TIMING_VTS 15:8"
+  },
+  {
+    "Address": "0x380F",
+    "Description": "TIMING_VTS 7:0"
+  },
+  {
+    "Address": "0x3842",
+    "Description": "H_AUTO_OFF_H"
+  },
+  {
+    "Address": "0x3843",
+    "Description": "H_AUTO_OFF_L"
+  },
+  {
+    "Address": "0x3844",
+    "Description": "V_AUTO_OFF_H"
+  },
+  {
+    "Address": "0x3845",
+    "Description": "V_AUTO_OFF_L"
+  },
+  {
+    "Address": "0x3820",
+    "Description": "TIMING_FORMAT1"
+  },
+  {
+    "Address": "0x3821",
+    "Description": "TIMING_FORMAT2"
+  },
+  {
+    "Address": "0x3814",
+    "Description": "X_ODD_INC"
+  },
+  {
+    "Address": "0x3815",
+    "Description": "X_EVEN_INC"
+  },
+  {
+    "Address": "0x382A",
+    "Description": "Y_ODD_INC"
+  },
+  {
+    "Address": "0x382B",
+    "Description": "Y_EVEN_INC"
+  },
+  {
+    "Address": "0x5000",
+    "Description": "DSP CTRL00"
+  },
+  {
+    "Address": "0x5001",
+    "Description": "DSP CTRL01"
+  },
+  {
+    "Address": "0x5002",
+    "Description": "DSP CTRL02"
+  },
+  {
+    "Address": "0x5003",
+    "Description": "DSP CTRL03"
+  },
+  {
+    "Address": "0x5004",
+    "Description": "DSP CTRL04"
+  },
+  {
+    "Address": "0x5005",
+    "Description": "DSP CTRL05"
+  },
+  {
+    "Address": "0x501F",
+    "Description": "DSP CTRL1F"
+  },
+  {
+    "Address": "0x5025",
+    "Description": "DSP CTRL25"
+  },
+  {
+    "Address": "0x5041",
+    "Description": "DSP CTRL41"
+  },
+  {
+    "Address": "0x5043",
+    "Description": "DSP CTRL43"
+  },
+  {
+    "Address": "0x5E00",
+    "Description": "PRE CTRL00"
+  },
+  {
+    "Address": "0x5E01",
+    "Description": "PRE CTRL01"
+  },
+  {
+    "Address": "0x5018",
+    "Description": "ISP CTRL18"
+  },
+  {
+    "Address": "0x5019",
+    "Description": "ISP CTRL19"
+  },
+  {
+    "Address": "0x501A",
+    "Description": "ISP CTRL1A"
+  },
+  {
+    "Address": "0x501B",
+    "Description": "ISP CTRL1B"
+  },
+  {
+    "Address": "0x501C",
+    "Description": "ISP CTRL1C"
+  },
+  {
+    "Address": "0x501D",
+    "Description": "ISP CTRL1D"
+  },
+  {
+    "Address": "0x501E",
+    "Description": "ISP CTRL1E"
+  },
+  {
+    "Address": "0x3500",
+    "Description": "AEC EXPO 19:16"
+  },
+  {
+    "Address": "0x3501",
+    "Description": "AEC EXPO 15:8"
+  },
+  {
+    "Address": "0x3502",
+    "Description": "AEC EXPO 7:0"
+  },
+  {
+    "Address": "0x3503",
+    "Description": "AEC MANUAL"
+  },
+  {
+    "Address": "0x3508",
+    "Description": "AEC GAIN 12:8"
+  },
+  {
+    "Address": "0x3509",
+    "Description": "AEC GAIN 7:0"
+  },
+  {
+    "Address": "0x350A",
+    "Description": "AEC DIGIGAIN 13:6"
+  },
+  {
+    "Address": "0x350B",
+    "Description": "AEC DIGIGAIN 5:0"
+  },
+  {
+    "Address": "0x3822",
+    "Description": "REG22"
+  },
+  {
+    "Address": "0x382C",
+    "Description": "BLC COL ST L"
+  },
+  {
+    "Address": "0x382D",
+    "Description": "BLC COL END L"
+  },
+  {
+    "Address": "0x382E",
+    "Description": "BLC COL ST R"
+  },
+  {
+    "Address": "0x382F",
+    "Description": "BLC COL END R"
+  },
+  {
+    "Address": "0x3830",
+    "Description": "BLC NUM OPTION"
+  },
+  {
+    "Address": "0x3831",
+    "Description": "BLC NUM MAN"
+  },
+  {
+    "Address": "0x3836",
+    "Description": "ZLINE NUM OPTION"
+  },
+  {
+    "Address": "0x4000",
+    "Description": "BLC CTRL00"
+  },
+  {
+    "Address": "0x4001",
+    "Description": "BLC CTRL01"
+  },
+  {
+    "Address": "0x4002",
+    "Description": "BLC CTRL02"
+  },
+  {
+    "Address": "0x4003",
+    "Description": "BLC CTRL03"
+  },
+  {
+    "Address": "0x4004",
+    "Description": "BLC CTRL04 target 15:8"
+  },
+  {
+    "Address": "0x4005",
+    "Description": "BLC CTRL05 target 7:0"
+  },
+  {
+    "Address": "0x4006",
+    "Description": "BLC CTRL06"
+  },
+  {
+    "Address": "0x4007",
+    "Description": "BLC CTRL07"
+  },
+  {
+    "Address": "0x4008",
+    "Description": "BLC CTRL08"
+  },
+  {
+    "Address": "0x4009",
+    "Description": "BLC CTRL09"
+  },
+  {
+    "Address": "0x400A",
+    "Description": "BLC CTRL0A"
+  },
+  {
+    "Address": "0x400B",
+    "Description": "BLC CTRL0B"
+  },
+  {
+    "Address": "0x400C",
+    "Description": "BLC CTRL0C"
+  },
+  {
+    "Address": "0x400D",
+    "Description": "BLC CTRL0D"
+  },
+  {
+    "Address": "0x400E",
+    "Description": "BLC CTRL0E"
+  },
+  {
+    "Address": "0x400F",
+    "Description": "BLC CTRL0F"
+  },
+  {
+    "Address": "0x4011",
+    "Description": "BLC CTRL11"
+  },
+  {
+    "Address": "0x4012",
+    "Description": "BLC CTRL12 manual_offset00[11:8]"
+  },
+  {
+    "Address": "0x4013",
+    "Description": "BLC CTRL13 manual_offset00[7:0]"
+  },
+  {
+    "Address": "0x4014",
+    "Description": "BLC CTRL14 manual_offset01[11:8]"
+  },
+  {
+    "Address": "0x4015",
+    "Description": "BLC CTRL15 manual_offset01[7:0]"
+  },
+  {
+    "Address": "0x4016",
+    "Description": "BLC CTRL16 manual_offset10[11:8]"
+  },
+  {
+    "Address": "0x4017",
+    "Description": "BLC CTRL17 manual_offset10[7:0]"
+  },
+  {
+    "Address": "0x4016",
+    "Description": "BLC CTRL18 manual_offset11[11:8]"
+  },
+  {
+    "Address": "0x4017",
+    "Description": "BLC CTRL19 manual_offset11[7:0]"
+  },
+  {
+    "Address": "0x4034",
+    "Description": "BLC OFFSET LIMIT [7:0]"
+  }
+]

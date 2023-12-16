@@ -1,0 +1,417 @@
+﻿[
+  {
+    "Description": "3264x2448 8MP",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0xC"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0xC0"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x9"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x90"
+      },
+      {
+        "Address": "0x3821",
+        "Value": "0x0"
+      }
+    ]
+  },
+  {
+    "Description": "1632x1224 2MP (2x2 binning)",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x6"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x60"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x4"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0xC8"
+      },
+      {
+        "Address": "0x3814",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3815",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x382A",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x382B",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x3821",
+        "Value": "0x70"
+      },
+      {
+        "Address": "0x3830",
+        "Value": "0x4"
+      },
+      {
+        "Address": "0x3836",
+        "Value": "0x1"
+      }
+    ]
+  },
+  {
+    "Description": "1920x1080 2MP FHD",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x7"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x80"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x4"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x38"
+      }
+    ]
+  },
+  {
+    "Description": "1440x900 1.3MP WXGA\u002B",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x5"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0xA0"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x84"
+      }
+    ]
+  },
+  {
+    "Description": "1280x1024 1.3MP",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x5"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x0"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x4"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x0"
+      }
+    ]
+  },
+  {
+    "Description": "1366x768 1MP HD",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x5"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x56"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x0"
+      }
+    ]
+  },
+  {
+    "Description": "1024x768 0.7MP XGA",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x4"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x0"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x0"
+      }
+    ]
+  },
+  {
+    "Description": "816x612 0.5MP (4x4 skipping)",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x30"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x2"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x64"
+      },
+      {
+        "Address": "0x3814",
+        "Value": "0x7"
+      },
+      {
+        "Address": "0x3815",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x382A",
+        "Value": "0x7"
+      },
+      {
+        "Address": "0x382B",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x3830",
+        "Value": "0x8"
+      },
+      {
+        "Address": "0x3836",
+        "Value": "0x2"
+      }
+    ]
+  },
+  {
+    "Description": "800x600 SVGA (2x2 binning sum)",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x20"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x2"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x58"
+      },
+      {
+        "Address": "0x3814",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3815",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x382A",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x382B",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x3821",
+        "Value": "0xF1"
+      }
+    ]
+  },
+  {
+    "Description": "800x600 SVGA",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x20"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x2"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x58"
+      }
+    ]
+  },
+  {
+    "Description": "800x480",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x3"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x20"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0xE0"
+      }
+    ]
+  },
+  {
+    "Description": "640x480 0.3MP VGA (4x4 skipping)",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x2"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x80"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0xE0"
+      },
+      {
+        "Address": "0x3814",
+        "Value": "0x7"
+      },
+      {
+        "Address": "0x3815",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x382A",
+        "Value": "0x7"
+      },
+      {
+        "Address": "0x382B",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x3830",
+        "Value": "0x8"
+      },
+      {
+        "Address": "0x3836",
+        "Value": "0x2"
+      }
+    ]
+  },
+  {
+    "Description": "640x480 0.3MP VGA",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x2"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x80"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0xE0"
+      }
+    ]
+  },
+  {
+    "Description": "320x240 CGA",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x1"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0x40"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x0"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0xF0"
+      }
+    ]
+  },
+  {
+    "Description": "160x120 QQVGA",
+    "Registers": [
+      {
+        "Address": "0x3808",
+        "Value": "0x0"
+      },
+      {
+        "Address": "0x3809",
+        "Value": "0xA0"
+      },
+      {
+        "Address": "0x380A",
+        "Value": "0x0"
+      },
+      {
+        "Address": "0x380B",
+        "Value": "0x78"
+      }
+    ]
+  }
+]

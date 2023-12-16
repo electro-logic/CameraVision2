@@ -18,7 +18,7 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="1.5*"/>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition/>
@@ -163,13 +163,15 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Read" Command="{Binding DownloadImageCommand}" />
-                <Button Content="Save TIFF + DNG RAW" Command="{Binding SaveImageCommand}" Grid.Column="1" />
-                <ComboBox Grid.Column="2" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
-                <ComboBox Grid.Column="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="6" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
+                <Button Content="Save TIFF" Command="{Binding SaveTiffImageCommand}" Grid.Column="1" />
+                <Button Content="Save DNG" Command="{Binding SaveDngImageCommand}" Grid.Column="2" />
+                <ComboBox Grid.Column="3" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="5" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="7" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
         <Image x:Name="image" Source="{Binding Image}" Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
