@@ -451,16 +451,35 @@ public partial class MainWindowVM : ObservableObject
     [RelayCommand]
     public async Task ExposureBracketing()
     {
-        _sensor.WriteReg(0x3500, 0);
-        _sensor.WriteReg(0x3501, 0);
-        _sensor.WriteReg(0x3502, 0);
-        for (byte i = 0; i < 255; i++)
-        {
-            _sensor.WriteReg(0x3502, (byte)(i));
-            await Task.Delay(500);
-            await DownloadImage();
-            Image.SavePNG(i + ".png");
-        }
+        IsEnabled = false;
+        await SetExposureAndWaitFrame(Exposure);
+        await DownloadImage();
+        Image.SavePNG("normal.png");
+
+        await SetExposureAndWaitFrame(Exposure * 4);
+        await DownloadImage();
+        Image.SavePNG("long.png");
+
+        await SetExposureAndWaitFrame(Exposure / 8);
+        await DownloadImage();
+        Image.SavePNG("short.png");
+
+        // Restore Exposure
+        Exposure *= 4;
+        IsEnabled = true;
+    }
+
+    async Task SetExposureAndWaitFrame(double newExposure)
+    {
+        // TODO: We are too conservative here, we can speed this up
+        var oldExposureMs = ExposureMs;        
+        Exposure = newExposure;
+        // Wait for the old frame to complete
+        await Task.Delay((int)Math.Ceiling(oldExposureMs * 4));
+        // Wait for the new frame to complete
+        await Task.Delay((int)Math.Ceiling(ExposureMs * 4));
+        // Wait few extra buffer time to ensure the new frame is captured
+        await Task.Delay(250);
     }
 
     // Experimental function

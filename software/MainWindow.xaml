@@ -64,7 +64,8 @@
         <StackPanel Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
             <GroupBox Header="Exposure">
                 <StackPanel Margin="10">
-                    <Slider Value="{Binding Exposure}" TickPlacement="BottomRight" Maximum="65535" SmallChange="1" LargeChange="128" />
+                    <Slider Value="{Binding Exposure}" Maximum="65535" Minimum="0" SmallChange="1" LargeChange="128" IsSnapToTickEnabled="False"
+                            Ticks="0,1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65535" TickPlacement="BottomRight" />
                     <TextBlock Text="{Binding ExposureMs, FallbackValue=0 ms, Mode=OneWay, StringFormat=\{0\} ms}" TextAlignment="Center" />
                 </StackPanel>
             </GroupBox>
@@ -164,14 +165,16 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Read" Command="{Binding DownloadImageCommand}" />
                 <Button Content="Save TIFF" Command="{Binding SaveTiffImageCommand}" Grid.Column="1" />
                 <Button Content="Save DNG" Command="{Binding SaveDngImageCommand}" Grid.Column="2" />
-                <ComboBox Grid.Column="3" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
-                <ComboBox Grid.Column="5" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="7" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
+                <Button Content="Save Multi Exposure" Command="{Binding ExposureBracketingCommand}" Grid.Column="3" />
+                <ComboBox Grid.Column="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="6" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="8" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
         <Image x:Name="image" Source="{Binding Image}" Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
