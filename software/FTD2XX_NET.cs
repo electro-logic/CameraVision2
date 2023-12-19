@@ -21,9 +21,7 @@
 **  1.1.2	-	Add new devices and change NULL string for .NET 5 compaibility.
 */
 
-
 using System;
-//using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;

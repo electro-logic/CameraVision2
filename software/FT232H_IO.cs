@@ -1,8 +1,10 @@
-﻿using FTD2XX_NET;
+﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
+
+using FTD2XX_NET;
 using System;
 using System.Threading;
 
-namespace CameraVision2;
+namespace CameraVision;
 
 public class FT232H_IO : IDisposable, StdIO
 {

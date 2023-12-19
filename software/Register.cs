@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Text.Json.Serialization;
 
+namespace CameraVision;
+
 public partial class Register : ObservableObject
 {
     [property: JsonConverter(typeof(HexStringJsonConverter))]

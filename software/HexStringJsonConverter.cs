@@ -4,6 +4,8 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+namespace CameraVision;
+
 public sealed class HexStringJsonConverter : JsonConverter<UInt16>
 {
     public override UInt16 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => Convert.ToUInt16(reader.GetString(), 16);

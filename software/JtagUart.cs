@@ -5,6 +5,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
+namespace CameraVision;
+
 /// <summary>
 /// UART over JTAG for Altera devices
 /// </summary>

@@ -14,11 +14,6 @@ public partial class MainWindow : System.Windows.Window
         InitializeComponent();
         DataContext = _vm;
     }
-    void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
-    {
-        _vm.ReadRegisters();
-        //_vm.ReadMipiRegisters();
-    }
     void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
         var position = e.GetPosition(image);

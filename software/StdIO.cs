@@ -1,6 +1,7 @@
 ﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
 
 using System;
+namespace CameraVision;
 
 /// <summary>
 /// Generic interface for IO device like FT232H, JTAG UART, RS232 UART, etc..

@@ -4,6 +4,8 @@
 using System;
 using System.Runtime.InteropServices;
 
+namespace CameraVision;
+
 /// <summary>
 /// Native methods exposed as C# methods
 /// </summary>

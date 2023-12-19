@@ -1,11 +1,12 @@
 ﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
 
-using CameraVision2;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+
+namespace CameraVision;
 
 /// <summary>
 /// Represent OV8865 Image Sensor
@@ -29,7 +30,9 @@ public class OV8865
         [Description("JTAG")]
         COM_JTAG = 0,
         [Description("JTAG+FT232H")]
-        COM_FT232H = 1
+        COM_FT232H = 1,
+        [Description("NONE")]
+        COM_NONE = -1
     }
     COM _com;
     public StdIO _io, _fastIO;
@@ -109,6 +112,7 @@ public class OV8865
 
     public void Reset()
     {
+        Debug.WriteLine("Sensor Reset");
         _io.WriteByte(CMD_RESET);
         CheckResponseOk();
     }
