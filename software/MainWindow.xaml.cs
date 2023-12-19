@@ -10,9 +10,8 @@ public partial class MainWindow : System.Windows.Window
     MainWindowVM _vm = new MainWindowVM();
     public MainWindow()
     {
-        _vm.Initialize();
-        InitializeComponent();
         DataContext = _vm;
+        InitializeComponent();
     }
     void Image_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
@@ -24,14 +23,11 @@ public partial class MainWindow : System.Windows.Window
         tbInfo.Text = $"X: {x} Y: {y}";
         try
         {
-            if (_vm.RawPixels != null)
+            if (_vm.RawImage.Pixels != null)
             {
-                int index = (int)(x + _vm.Image.Width * y);
-                if (index < _vm.RawPixels.Length)
-                {
-                    var raw = _vm.RawPixels[index];
-                    tbInfo.Text += $" - Raw10: {raw}";
-                }
+                ushort raw = _vm.RawImage.GetPixel(x, y);
+                ushort avg = _vm.GetRawAvgPixel(x, y, 5);
+                tbInfo.Text += $" - Raw: {raw} - Raw Avg5: {avg}";
             }
         }
         catch (Exception ex)

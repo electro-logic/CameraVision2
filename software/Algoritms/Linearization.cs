@@ -13,7 +13,7 @@ public static class Linearization
         var coef = coefs[polyIndex];
         return coef[0] * x * x * x + coef[1] * x * x + coef[2] * x + coef[3];
     }
-    public static ushort[] Linearize(ushort[] pixels, int imageWidth, int imageHeight)
+    public static void Linearize(RawImage image)
     {
         // Algorithm not recommended for production
 
@@ -42,12 +42,11 @@ public static class Linearization
             new[]{  2.2013e-10,  -8.0743e-06,  -1.7011e-02,   5.7241e+01 },
             new[]{  8.4445e-10,   6.3519e-06,  -5.4638e-02,  -1.8728e+03 }
         };
-        Parallel.For(0, imageHeight, (py) =>
+        Parallel.For(0, image.Height, (py) =>
         {
-            for (int px = 0; px < imageWidth; px++)
+            for (int px = 0; px < image.Width; px++)
             {
-                int pixelIndex = py * imageWidth + px;
-                var x = pixels[pixelIndex];
+                var x = image.GetPixel(px, py);
                 double y = 0;
                 bool rowEven = py % 2 == 0;
                 bool colEven = px % 2 == 0;
@@ -71,9 +70,8 @@ public static class Linearization
                     // r
                     y = EvalPiecedPolynomial(x, breaks, coefsR);
                 }
-                pixels[pixelIndex] = (ushort)Math.Clamp(Math.Round(x + y), 0, 65535);
+                image.SetPixel(px, py, (ushort)Math.Clamp(Math.Round(x + y), 0, ushort.MaxValue));
             }
         });
-        return pixels;
     }
 }

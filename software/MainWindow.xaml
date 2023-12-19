@@ -149,7 +149,13 @@
 
             <GroupBox Header="Raw Data">
                 <Grid Margin="10">
-                    <CheckBox Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsRawLinearized}" IsEnabled="False" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Content="Lens Shading Correction" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLensShadingCorrectionEnabled}" />
+                    <CheckBox Grid.Row="2" Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLinearizedEnabled}" IsEnabled="False" />
                 </Grid>
             </GroupBox>
         </StackPanel>
@@ -172,16 +178,18 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="Open DNG" Command="{Binding OpenImageCommand}" />
-                <Button Content="Read" Command="{Binding DownloadImageCommand}" Grid.Column="1" />
-                <Button Content="Save TIFF" Command="{Binding SaveTiffImageCommand}" Grid.Column="2" />
-                <Button Content="Save DNG" Command="{Binding SaveDngImageCommand}" Grid.Column="3" />
+                <Button Content="Connect" Command="{Binding ConnectCommand}" Grid.Column="1" />
+                <Button Content="Read" Command="{Binding DownloadImageCommand}" Grid.Column="2" />
+                <Button Content="Save TIFF" Command="{Binding SaveTiffImageCommand}" Grid.Column="3" />
+                <Button Content="Save DNG" Command="{Binding SaveDngImageCommand}" Grid.Column="4" />
                 <!--<Button Content="Save Multi Exposure" Command="{Binding ExposureBracketingCommand}" Grid.Column="4" />-->
-                <ComboBox Grid.Column="5" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
-                <ComboBox Grid.Column="7" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="9" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="6" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding VideoSettings}" SelectedIndex="0" SelectedItem="{Binding CurrentVideoSetting}" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="8" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding DemosaicingAlgorithms}" SelectedIndex="0" SelectedItem="{Binding CurrentDemosaicingAlgorithm}" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="10" TextWrapping="Wrap" Text="{Binding FPS, FallbackValue=0 fps, StringFormat=\{0\} fps}" VerticalAlignment="Center"/>
             </Grid>
         </GroupBox>
         <local:ZoomBorder Margin="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" ZoomMaximum="20" ClipToBounds="True">
