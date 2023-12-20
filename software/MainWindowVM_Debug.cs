@@ -44,6 +44,7 @@ public partial class MainWindowVM
         {
             Debug.Write($"{v} ");
         }
+        Debug.WriteLine("");
     }
 
     ushort[] GetRawAvgBGGR(int x, int y)

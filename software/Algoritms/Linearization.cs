@@ -11,7 +11,8 @@ public static class Linearization
     {
         var polyIndex = (int)Math.Min(Math.Floor(x / breaks[1]), breaks.Length - 2);
         var coef = coefs[polyIndex];
-        return coef[0] * x * x * x + coef[1] * x * x + coef[2] * x + coef[3];
+        var x0 = breaks[polyIndex];
+        return coef[0] * Math.Pow(x - x0, 3) + coef[1] * Math.Pow(x - x0, 2) + coef[2] * (x - x0) + coef[3];
     }
     public static void Linearize(RawImage image)
     {
@@ -23,24 +24,24 @@ public static class Linearization
         
         // TODO: coefficients need to be calculated
         double[][] coefsB = {
-            new[]{  5.3198e-10, -2.2160e-05,   1.8638e-01,  -3.4929e+00 },
-            new[]{ -2.7856e-10,  1.2704e-05,  -2.0179e-02,  -9.6112e+02 },
-            new[]{ -9.9967e-10, -5.5513e-06,   1.3608e-01,   1.7568e+03 }
+            new[]{  3.5568e-10,  -1.3610e-05,   2.4910e-01,  -1.5629e+03 },
+            new[]{ -3.7282e-10,   9.7001e-06,   1.6370e-01,   1.0920e+03 },
+            new[]{ -1.8201e-09,  -1.4733e-05,   5.3748e-02,   5.4104e+03 }
         };
         double[][] coefsG1 = {
-            new[]{ -3.6824e-11,   3.3687e-06,  -9.8925e-02,   5.3462e+02 },
-            new[]{ -1.7058e-11,   9.5538e-07,  -4.4642e-03,  -4.0272e+02 },
-            new[]{  1.6112e-10,  -1.6252e-07,   1.2856e-02, - 2.2215e+02 }
+            new[]{  1.5683e-11,   6.6319e-06,  -8.1041e-02,  -8.4337e+02 },
+            new[]{ -4.3024e-10,   7.6597e-06,   2.3116e-01,   7.1463e+02 },
+            new[]{ -7.8755e-10,  -2.0537e-05,  -5.0139e-02,   4.9346e+03 }
         };
         double[][] coefsG2 = {
-            new[]{  1.7835e-10,  -5.1598e-06,  -1.4379e-02,   2.9412e+02 },
-            new[]{ -1.8598e-10,   6.5288e-06,   1.5528e-02,  -6.2301e+02 },
-            new[]{ -1.4488e-10,  -5.6594e-06,   3.4521e-02,   8.9307e+02 }
+            new[]{  1.3161e-11,   6.7865e-06,  -8.2550e-02,  -8.4776e+02 },
+            new[]{ -4.3239e-10,   7.6490e-06,   2.3280e-01,   7.2475e+02 },
+            new[]{ -7.7933e-10,  -2.0688e-05,  -5.2047e-02,   4.9529e+03 }
         };
         double[][] coefsR = {
-            new[]{ -4.0306e-10,   1.8340e-05,  -2.4127e-01,   7.7748e+02 },
-            new[]{  2.2013e-10,  -8.0743e-06,  -1.7011e-02,   5.7241e+01 },
-            new[]{  8.4445e-10,   6.3519e-06,  -5.4638e-02,  -1.8728e+03 }
+            new[]{  2.1120e-10,  -6.9575e-06,   1.2922e-01,  -1.0204e+03 },
+            new[]{ -2.8367e-10,   6.8834e-06,   1.2760e-01,   6.8397e+02 },
+            new[]{ -1.1232e-09,  -1.1707e-05,   2.2227e-02,   3.7991e+03 }
         };
         Parallel.For(0, image.Height, (py) =>
         {
@@ -70,7 +71,8 @@ public static class Linearization
                     // r
                     y = EvalPiecedPolynomial(x, breaks, coefsR);
                 }
-                image.SetPixel(px, py, (ushort)Math.Clamp(Math.Round(x + y), 0, ushort.MaxValue));
+                var uy = (ushort)Math.Clamp(Math.Round(x + y), 0, ushort.MaxValue);
+                image.SetPixel(px, py, uy);
             }
         });
     }

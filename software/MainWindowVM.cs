@@ -44,9 +44,9 @@ public partial class MainWindowVM : ObservableObject
     [ObservableProperty]
     int _minimumValue, _maximumValue;
     [ObservableProperty]
-    bool _isLinearizedEnabled = false;
+    bool _isLinearizedEnabled = true;
     [ObservableProperty]
-    bool _isLensShadingCorrectionEnabled = true;
+    bool _isLensShadingCorrectionEnabled = false;
     [ObservableProperty]
     bool _isConnected = false;
 
@@ -143,7 +143,9 @@ public partial class MainWindowVM : ObservableObject
         }
     }
 
-    BitmapMetadata GetTIFFMetadataD8M() => Metadata.GetTIFFMetadata(maker, model, 3.37, 2.8, 4.6144, 3.472, ExposureMs, (UInt16)ISO);
+    BitmapMetadata GetTIFFMetadataD8M() => IsConnected ? 
+        Metadata.GetTIFFMetadata(maker, model, 3.37, 2.8, 4.6144, 3.472, ExposureMs, (UInt16)ISO) : 
+        Metadata.GetTIFFMetadata(maker, model, 3.37, 2.8, 4.6144, 3.472, 50, 100);
 
     [RelayCommand(CanExecute = nameof(IsConnected))]
     public void ReadRegisters()
@@ -207,22 +209,19 @@ public partial class MainWindowVM : ObservableObject
     {
         RawImage.Pixels = rawPixels;
         Debug.WriteLine("Frame received");
-        int imageWidth = Image.PixelWidth;
-        int imageHeight = Image.PixelHeight;
         if (IsLinearizedEnabled)
         {
             Linearization.Linearize(RawImage);
-            Debug.WriteLine("Raw pixels linearized");
         }
         MinimumValue = RawImage.Pixels.Min();
         MaximumValue = RawImage.Pixels.Max();
         //CreateHistogram(RawPixels);
-
         var rawPreview = RawImage.Clone();
         if (IsLensShadingCorrectionEnabled)
         {
             // Parameters manually determined with DngOpcodesEditor
-            DngOpcodes.FixVignetteRadial(rawPreview, 1.8, 0, 0, 0, 0, 0.52, 0.41);
+            // TODO: call on rawPreview
+            DngOpcodes.FixVignetteRadial(RawImage, 1.8, 0, 0, 0, 0, 0.52, 0.41);
         }
         ulong[] colorPixels = null;
         switch (CurrentDemosaicingAlgorithm)
@@ -237,7 +236,7 @@ public partial class MainWindowVM : ObservableObject
                 colorPixels = Bayer.GrayRaw(rawPreview);
                 break;
         }
-        Image.WritePixels(new Int32Rect(0, 0, imageWidth, imageHeight), colorPixels, imageWidth * _pixelFormat.BitsPerPixel / 8, 0);
+        Image.WritePixels(new Int32Rect(0, 0, Image.PixelWidth, Image.PixelHeight), colorPixels, Image.PixelWidth * _pixelFormat.BitsPerPixel / 8, 0);
     }
 
     [RelayCommand]
@@ -266,7 +265,7 @@ public partial class MainWindowVM : ObservableObject
         }
     }
 
-    void SaveTiff(string filename) => RawImage.SaveTiff(filename, GetTIFFMetadataD8M());
+    void SaveTiff(string filename) => Image.SaveTiff(filename, GetTIFFMetadataD8M());
 
     void SaveDng(string filename)
     {
@@ -296,7 +295,6 @@ public partial class MainWindowVM : ObservableObject
         const string ColorMatrix3 = "1.4365 -0.513 0.0944 0.0585 0.7667 0.2145 0.0607 0.0998 0.4381";
         const string AsShotNeutral = "0.5439 1.0000 0.5965";  // RGB White Balance for D50
         string dngMetadata =
-            "-DNGVersion=1.6.0.0 " +
             "-EXIF:SubfileType=\"Full-resolution Image\" " +
             "-PhotometricInterpretation=\"Color Filter Array\" " +  // Bayer Pattern Image
             "-IFD0:CFARepeatPatternDim=\"2 2\" " +                  // Bayer Pattern Size: 2x2
@@ -305,7 +303,8 @@ public partial class MainWindowVM : ObservableObject
             $"-UniqueCameraModel=\"{maker} {model}\" ";
         if (DNG_COLOR_MATRIX)
         {
-            dngMetadata += $"-CalibrationIlluminant1=\"{CalibrationIlluminant1}\" " +
+            dngMetadata += "-DNGVersion=1.6.0.0 " +
+            $"-CalibrationIlluminant1=\"{CalibrationIlluminant1}\" " +
             $"-ColorMatrix1=\"{ColorMatrix1}\" " +
             $"-CalibrationIlluminant2=\"{CalibrationIlluminant2}\" " +
             $"-ColorMatrix2=\"{ColorMatrix2}\" " +
@@ -315,7 +314,7 @@ public partial class MainWindowVM : ObservableObject
         }
         else
         {
-            dngMetadata += $"-ColorMatrix1=\"{identityMatrix}\" ";
+            dngMetadata += $"-DNGVersion=1.3.0.0 -ColorMatrix1=\"{identityMatrix}\" ";
         }
         if (IsWhiteBalanceEnabled)
         {
@@ -356,8 +355,20 @@ public partial class MainWindowVM : ObservableObject
             frame.CopyPixels(RawImage.Pixels, w * 2, 0);
             Image = new WriteableBitmap(w, h, 96, 96, _pixelFormat, null);
             UpdateImage(RawImage.Pixels);
-            //DebugLinearity(1228, new[] { 852, 762, 672, 584, 492, 400 });
-            //DebugLinearity(714, new[] { 352, 428, 506, 582, 658, 734, 810, 886 });
+            /*
+            // Neutral
+            DebugLinearity(1188, new[] { 866, 776, 686, 596, 506, 416 });
+            // Enhanced
+            DebugLinearity(680, new[] { 372, 450, 528, 606, 684, 762, 840, 918 });
+            // White 2.0                    0.945421 = 61958
+            DebugLinearity(1462, new[] { 654 });
+            // White Giotto                 0.848536 = 55609
+            DebugLinearity(132, new[] { 844 });
+            // Black 3.0                    0.019948 = 1307
+            DebugLinearity(132, new[] { 478 });
+            // Musou Black Fabric KIWAMI    0.001052 = 69
+            DebugLinearity(132, new[] { 654 });
+            */
         }
     }
 

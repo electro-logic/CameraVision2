@@ -18,7 +18,7 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition/>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition/>
@@ -151,13 +151,20 @@
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <CheckBox Content="Lens Shading Correction" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLensShadingCorrectionEnabled}" />
-                    <CheckBox Grid.Row="2" Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLinearizedEnabled}" IsEnabled="False" />
+                    <CheckBox Grid.Row="2" Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLinearizedEnabled}" />
                 </Grid>
             </GroupBox>
+
+            <GroupBox Header="Lens Shading Correction">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Content="Enabled" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLensShadingCorrectionEnabled}" />
+                </Grid>
+            </GroupBox>
+            
         </StackPanel>
         <GroupBox Grid.Column="3" Header="Communication">
             <Grid Margin="10">
