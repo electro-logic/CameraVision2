@@ -109,8 +109,6 @@
                 </Grid>
             </GroupBox>
 
-            <TextBlock Text="Read camera registers after changing settings" TextWrapping="Wrap" Margin="10" FontStyle="Italic" HorizontalAlignment="Center" />
-
             <GroupBox Header="Focus">
                 <StackPanel Margin="10">
                     <Slider Value="{Binding Focus}" Maximum="1023" LargeChange="32" SmallChange="1" TickFrequency="64" TickPlacement="BottomRight"/>
@@ -147,24 +145,20 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Raw Data">
+            <GroupBox Header="Processing">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <CheckBox Grid.Row="2" Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLinearizedEnabled}" />
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Header="Lens Shading Correction">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="10"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <CheckBox Content="Enabled" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLensShadingCorrectionEnabled}" />
+                    <CheckBox Content="Linearize" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLinearizedEnabled}" />
+                    <CheckBox Grid.Row="2" Content="Builtin Lens Correction" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsLensCorrectionEnabled}" />
+                    <CheckBox Grid.Row="4" Content="DNG Lens Correction" Foreground="{StaticResource colorLight}" IsChecked="{Binding IsDngLensCorrectionEnabled}" />
                 </Grid>
             </GroupBox>
-            
         </StackPanel>
         <GroupBox Grid.Column="3" Header="Communication">
             <Grid Margin="10">

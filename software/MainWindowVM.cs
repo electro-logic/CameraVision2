@@ -44,16 +44,23 @@ public partial class MainWindowVM : ObservableObject
     [ObservableProperty]
     int _minimumValue, _maximumValue;
     [ObservableProperty]
-    bool _isLinearizedEnabled = true;
+    bool _isLinearizedEnabled = false;
     [ObservableProperty]
-    bool _isLensShadingCorrectionEnabled = false;
+    bool _isDngLensCorrectionEnabled = false;
+    
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(DownloadImageCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ResetCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ReadRegistersCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ReadMipiRegistersCommand))]
     bool _isConnected = false;
 
     [ObservableProperty]
     RawImage _rawImage;
 
-    public List<VideoSetting> VideoSettings { get; set; }
+    [ObservableProperty]
+    List<VideoSetting> _videoSettings;
+
     public DemosaicingAlgorithms[] DemosaicingAlgorithms => (DemosaicingAlgorithms[])Enum.GetValues(typeof(DemosaicingAlgorithms));
     public OV8865.COM[] Communications => new OV8865.COM[] { OV8865.COM.COM_JTAG, OV8865.COM.COM_FT232H, OV8865.COM.COM_NONE };
 
@@ -73,10 +80,11 @@ public partial class MainWindowVM : ObservableObject
             VideoSettings = JsonSerializer.Deserialize<List<VideoSetting>>(File.ReadAllText(@"Settings\CameraSettings.json"));
             Thread.Sleep(250);
             // Hardcoded default settings
-            CurrentVideoSetting = VideoSettings[6];
+            CurrentVideoSetting = VideoSettings[13];
             Focus = 128;
             IsWhiteBalanceEnabled = true;
             MWBGainBlue = MWBGainGreen = MWBGainRed = 1.0;
+            IsLensCorrectionEnabled = false;
             ReadRegisters();
             ReadMipiRegisters();
             Communication = OV8865.COM.COM_FT232H;
@@ -167,7 +175,7 @@ public partial class MainWindowVM : ObservableObject
         OnPropertyChanged(nameof(FPS));
         OnPropertyChanged(nameof(ExposureMs)); OnPropertyChanged(nameof(Exposure));
         OnPropertyChanged(nameof(AnalogGain)); OnPropertyChanged(nameof(ISO));
-        OnPropertyChanged(nameof(IsWhiteBalanceEnabled));
+        OnPropertyChanged(nameof(IsWhiteBalanceEnabled)); OnPropertyChanged(nameof(IsLensCorrectionEnabled));
         OnPropertyChanged(nameof(MWBGainRed)); OnPropertyChanged(nameof(MWBGainGreen)); OnPropertyChanged(nameof(MWBGainBlue));
     }
 
@@ -217,7 +225,7 @@ public partial class MainWindowVM : ObservableObject
         MaximumValue = RawImage.Pixels.Max();
         //CreateHistogram(RawPixels);
         var rawPreview = RawImage.Clone();
-        if (IsLensShadingCorrectionEnabled)
+        if (IsDngLensCorrectionEnabled)
         {
             // Parameters manually determined with DngOpcodesEditor
             // TODO: call on rawPreview
@@ -287,13 +295,13 @@ public partial class MainWindowVM : ObservableObject
         string identityMatrix = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0";
 
         // D8M Preliminary Color Matrices
-        const string CalibrationIlluminant1 = "Tungsten (Incandescent)";    // // https://exiftool.org/TagNames/EXIF.html#LightSource
-        const string ColorMatrix1 = "1.6572 -0.5447 -0.0647 0.4383 0.1854 0.1173 0.0805 0.0367 0.3337";
-        const string CalibrationIlluminant2 = "D50";
-        const string ColorMatrix2 = "1.3744 -0.4354 0.1334 0.1255 0.6122 0.3058 0.0622 0.0897 0.4731";
+        const string CalibrationIlluminant1 = "D50";
+        const string ColorMatrix1 = "1.589736 -0.04418504 -0.06866902 0.3456529 0.7939606 0 0 0 1.386002";
+        const string CalibrationIlluminant2 = "Tungsten (Incandescent)";    // // https://exiftool.org/TagNames/EXIF.html#LightSource
+        const string ColorMatrix2 = "1.483497 -0.1886485 0.3865638 -0.0356397 0.7273174 1.140663 0.06446743 -0.8746671 5.04715";
         const string CalibrationIlluminant3 = "Warm White Fluorescent";   // CCT 2566K
-        const string ColorMatrix3 = "1.4365 -0.513 0.0944 0.0585 0.7667 0.2145 0.0607 0.0998 0.4381";
-        const string AsShotNeutral = "0.5439 1.0000 0.5965";  // RGB White Balance for D50
+        const string ColorMatrix3 = "1.084503 -0.006070852 -0.1033481 -0.08945769 1 0.08181608 0.1312559 -0.4358102 3.580236";
+        const string AsShotNeutral = "1 1 1";  // 0.67 1 0.73 RGB White Balance for D50, 0.5439 1.0000 0.5965
         string dngMetadata =
             "-EXIF:SubfileType=\"Full-resolution Image\" " +
             "-PhotometricInterpretation=\"Color Filter Array\" " +  // Bayer Pattern Image
@@ -303,13 +311,13 @@ public partial class MainWindowVM : ObservableObject
             $"-UniqueCameraModel=\"{maker} {model}\" ";
         if (DNG_COLOR_MATRIX)
         {
-            dngMetadata += "-DNGVersion=1.6.0.0 " +
+            dngMetadata += "-DNGVersion=1.3.0.0 " +                 // ColorMatrix3 supported in DNG 1.6 and later
             $"-CalibrationIlluminant1=\"{CalibrationIlluminant1}\" " +
             $"-ColorMatrix1=\"{ColorMatrix1}\" " +
-            $"-CalibrationIlluminant2=\"{CalibrationIlluminant2}\" " +
-            $"-ColorMatrix2=\"{ColorMatrix2}\" " +
-            $"-CalibrationIlluminant3=\"{CalibrationIlluminant3}\" " +
-            $"-ColorMatrix3=\"{ColorMatrix3}\" " +                  // ColorMatrix3 supported in DNG 1.6 and later
+            //$"-CalibrationIlluminant2=\"{CalibrationIlluminant2}\" " +
+            //$"-ColorMatrix2=\"{ColorMatrix2}\" " +
+            //$"-CalibrationIlluminant3=\"{CalibrationIlluminant3}\" " +
+            //$"-ColorMatrix3=\"{ColorMatrix3}\" " +                  
             $"-AsShotNeutral=\"{AsShotNeutral}\" ";
         }
         else

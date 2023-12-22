@@ -22,6 +22,7 @@ public partial class MainWindowVM
             {
                 _sensor.WriteCom(value);
                 _sensor.SyncCom();
+                OnPropertyChanged();
             }
         }
     }
@@ -126,6 +127,20 @@ public partial class MainWindowVM
             OnPropertyChanged();
         }
     }
+
+    public bool IsLensCorrectionEnabled
+    {
+        get => IsConnected ? _sensor.GetLensCorrectionEnable() : false;
+        set
+        {
+            if (!IsConnected)
+                return;
+
+            _sensor.SetLensCorrectionEnable(value);
+            OnPropertyChanged();
+        }
+    }
+
     // For optimal performance exposure should be <200ms
     public double ExposureMs
     {

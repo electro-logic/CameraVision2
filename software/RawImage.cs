@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -23,7 +24,14 @@ public partial class RawImage : ObservableObject
         _height = height;
         _pixels = new ushort[_width * _height * sizeof(ushort)];
     }
-    public ushort GetPixel(int x, int y) => Pixels[x + y * Width];
+    public ushort GetPixel(int x, int y)
+    {
+        if(x < 0 || y < 0 || x > Width-1 || y > Height-1)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+        return Pixels[x + y * Width];
+    }
     public void SetPixel(int x, int y, ushort value) => Pixels[x + y * Width] = value;
     public RawImage Clone() => new RawImage(Width, Height) { Pixels = Pixels };
 

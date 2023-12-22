@@ -202,6 +202,26 @@ public class OV8865
         return exposure;
     }
 
+    // Lens Correction compensates for the illumination drop off the corners due to the lens
+
+    public bool GetLensCorrectionEnable()
+    {
+        return (ReadReg(0x5000) & (1 << 7)) > 0;
+    }
+
+    public void SetLensCorrectionEnable(bool val)
+    {
+        byte reg = ReadReg(0x5000);
+        if (val)
+        {
+            WriteReg(0x5000, (byte)(reg | (1 << 7)));
+        }
+        else
+        {
+            WriteReg(0x5000, (byte)(reg & ~(1 << 7)));
+        }
+    }
+
     // MWB (Manual White Balance)
     // Digital Gain for R,G,B channels. 0x400 is 1x gain.
 
