@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
         SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" 
         Background="{StaticResource colorDark}" Foreground="{StaticResource colorLight}" WindowState="Maximized"
-        Title="Camera Vision v2.0 - http://electro-logic.blogspot.it" Width="1920" Height="1080" WindowStartupLocation="CenterScreen" IsEnabled="{Binding IsEnabled}">
+        Title="Camera Vision v2.2 - http://electro-logic.blogspot.it" Width="1920" Height="1080" WindowStartupLocation="CenterScreen" IsEnabled="{Binding IsEnabled}">
     <Window.Resources>
         <ResourceDictionary>
             <Style TargetType="GridSplitter">
