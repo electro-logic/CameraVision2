@@ -15,21 +15,25 @@ What's new:
 - Full 10 bit support
 - JTAG only / JTAG + USB 2.0 communication options
 - TIFF + DNG RAW export with metadata
+- Processing: Linearize, Builtin / DNG Lens Correction
+- Editor can works offline for debayering, export, etc..
+- Editor mouse info: X/Y, Rgb, RAW, RAW AVG5
 - Image Statistics, Download progress
 - New MIPI and Camera registers
 - Updated toolchain for a modern development environment
 
-Required Software:
+Required Software to compile the project:
 
 - Microsoft Visual Studio 2022 (WPF / .NET 6)
 - Intel Quartus Prime 18.1 (Standard or Lite Edition)
 
-Required Hardware:
+Required Hardware to run the project:
 
 - Terasic DE0-Nano (Cyclone IV 22K LEs FPGA) or another Terasic compatible dev board (see FAQ)
 - Terasic D8M (OV8865 Image Sensor + MIPI Decoder TC358748XBG)
 
 Optional Hardware:
+
 - FTDI UM232H with DE0-Nano [board adapter](https://electro-logic.blogspot.com/2014/03/fpga-comunicazione-ad-alta-velocita_99.html)
 
 Quick start:
@@ -47,6 +51,14 @@ optional 2c) Connect UM232H to PC with an USB 2.0 cable. The module should be [c
 optional 4b) Select COM_FT232H from the Communication panel if you are using the UM232H
 
 5) Press the Read button to take a new image
+
+Optical Performances:
+
+The tiny lens is pretty good in terms of sharpness evaluated with lines per millimeter (lp/mm) with the software [MTF Mapper](https://sourceforge.net/projects/mtfmapper/)
+
+![alt text](docs/d8m_mtf_mapper.png)
+
+[MTF Data Download](docs/D8M_MTF.zip)
 
 F.A.Q.
 
