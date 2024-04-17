@@ -60,6 +60,8 @@ The tiny lens is pretty good in terms of sharpness evaluated with lines per mill
 
 [MTF Data Download](docs/D8M_MTF.zip)
 
+Notes: the calculated MTF is approximated. Proper measurements require an accurate setup. 
+
 F.A.Q.
 
 **Q) When I launch CameraVision.exe image is corrupted.**
