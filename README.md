@@ -41,7 +41,7 @@ optional 2b) Connect UM232H with the adapter into GPIO1
 
 optional 2c) Connect UM232H to PC with an USB 2.0 cable. The module should be [configured](https://electro-logic.blogspot.com/2014/02/fpga-comunicazione-ad-alta-velocita_16.html) with the FT_PROG utility.
 
-3) Program the bitstream \eda\de0-nano\output_files\DE0_NANO_D8M.sof into the DE0-Nano with Quartus Programmer 
+3) Program the bitstream \de0-nano\output_files\DE0_NANO_D8M.sof into the DE0-Nano with Quartus Programmer 
 4) Wait that LED0 turn on and launch CameraVision.exe (available compiled or can be compiled from the source code)
    
 optional 4b) Select COM_FT232H from the Communication panel if you are using the UM232H
@@ -72,7 +72,7 @@ A) RAW images are linear and 10-bit are required to retain quality after the gam
 
 **Q) Are sensor images ready to use?**
 
-A) Images from the sensor are raw pixels and post-processing is required to improve the visual quality. This includes gamma-encoding, color correction, sharpening, etc..
+A) Images from the sensor are raw pixels and post-processing is required to improve the visual quality. This includes linearization, gamma-encoding, color correction, sharpening, etc..
 
 
 **Q) Can I use another dev board?**
@@ -82,9 +82,10 @@ A) You can use any Terasic development board compatible with the D8M camera, for
 
 **Q) What's next?**
 
-A) There is still room for improvements:
+A) There is still room for improvements, for example:
 - FT232H controller: fully utilise the USB 2.0 bandwidth by adding a FIFO memory to decouple the SDRAM memory
 - Improve the protocol to use a single cable (ex. JTAG only or FT232H only)
 - Add parameters to customize the mipi controller and the ft232h component from the Platform Designer
-- Additional image statistics
+- Additional image statistics and histogram
 - Video recording
+- ASCOM driver to extend compatibility with other software
