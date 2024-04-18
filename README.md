@@ -94,6 +94,11 @@ A) Images from the sensor are raw pixels and post-processing is required to impr
 A) You can use any Terasic development board compatible with the D8M camera, for example DE2-115, DE1-SoC, DE0-CV, C5G, DE10-Lite, DE10-Standard, DE10-Nano, etc.. some changes may be required, always check and adapt the pinout for your board and the memory timing. Please open an issue if you need help with a specific board.
 
 
+**Q) During the compilation I get the Error 12006**
+
+A) You need to add the mipi_controller folder to the IP path in QSys / Tools / Options / Search Path and then regenerate the HDL. Note; QSys is named Platform Designer in latest releases of Quartus.
+
+
 **Q) What's next?**
 
 A) There is still room for improvements, for example:
