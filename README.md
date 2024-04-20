@@ -62,11 +62,17 @@ The tiny lens is pretty good in terms of sharpness evaluated with lines per mill
 
 Notes: the calculated MTF is approximated. Proper measurements require an accurate setup. 
 
-DE1-Soc:
+DE1-Soc notes
 
-Support for DE1-SoC is experimental. GPIO 1 (JP2) should be used to connect D8M. FT232H is not supported on the DE1-SoC.
+Support for DE1-SoC is experimental. JTAG only is supported at this time and is slower than DE0/Nano. An Ethernet protocol may be implemented in future on the HPS.
+
+GPIO 1 (JP2) should be used to connect D8M.
+
+FT232H is not supported on the DE1-SoC.
 
 ![alt text](docs/de1-soc_d8m.jpg)
+
+Note: An optional fan is recommended on DE1-SoC when HPS is used, please read the [article](https://electro-logic.blogspot.com/2015/07/fpga-cyclone-v-soc-e-de1-soc.html) for more info.
 
 F.A.Q.
 
@@ -114,3 +120,4 @@ A) There is still room for improvements, for example:
 - Additional image statistics and histogram
 - Video recording
 - ASCOM driver to extend compatibility with other software
+- Ethernet communication on DE1-SoC
