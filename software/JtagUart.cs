@@ -1,6 +1,7 @@
 ﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -70,6 +71,7 @@ public class JtagUart : IDisposable, StdIO
         {
             // BeMicro CV A9 use old USB-Blaster
             //throw new Exception(string.Format("Cable used (e.g. ByteBlaster, MasterBlaster or old USB-Blaster) is not good for JTAG UART communication."));
+            Debug.WriteLine("Cable used (e.g. ByteBlaster, MasterBlaster or old USB-Blaster) is not good for JTAG UART communication.");
         }
         NativeMethods.jtagatlantic_wait_open(_handle);
     }
@@ -121,18 +123,13 @@ public class JtagUart : IDisposable, StdIO
             }
             remainingBytes -= writtenBytes;
         }
+        NativeMethods.jtagatlantic_flush(_handle);
     }
 
     public void Flush()
     {
         CheckConnection();
         NativeMethods.jtagatlantic_flush(_handle);
-    }
-
-    public int GetAvailableBytes()
-    {
-        CheckConnection();
-        return NativeMethods.jtagatlantic_bytes_available(_handle);
     }
 
     public string ReadLine()

@@ -29,7 +29,7 @@ Required Software to compile the project:
 
 Required Hardware to run the project:
 
-- Terasic DE0-Nano (Cyclone IV 22K LEs FPGA) or another Terasic compatible dev board (see FAQ)
+- Terasic DE0-Nano (Cyclone IV 22K LEs FPGA), DE1-SoC (Cyclone V 85K LEs FPGA, experimental) or another Terasic compatible dev board (see FAQ)
 - Terasic D8M (OV8865 Image Sensor + MIPI Decoder TC358748XBG)
 
 Optional Hardware:
@@ -38,7 +38,7 @@ Optional Hardware:
 
 Quick start:
 
-1) Connect D8M into GPIO0 of DE0-Nano like shown into images into \doc folder 
+1) Connect D8M into GPIO0 of DE0-Nano as shown into images into \doc folder 
 2) Connect DE0-Nano to PC with the USB cable bundled
 
 optional 2b) Connect UM232H with the adapter into GPIO1
@@ -61,6 +61,10 @@ The tiny lens is pretty good in terms of sharpness evaluated with lines per mill
 [MTF Data Download](docs/D8M_MTF.zip)
 
 Notes: the calculated MTF is approximated. Proper measurements require an accurate setup. 
+
+DE1-Soc:
+
+Support for DE1-SoC is experimental. FT232H is not supported on DE1-SoC and GPIO 1 (JP2) should be used to connect D8M.
 
 F.A.Q.
 

@@ -197,7 +197,7 @@
             <Image x:Name="image" Source="{Binding Image}" MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" />
         </local:ZoomBorder>
         <ProgressBar Visibility="{Binding ProgressVisibility}" Value="{Binding DownloadProgress}" Grid.Column="2" HorizontalAlignment="Center" Height="25" Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Center" Width="200"/>
-        <TextBlock x:Name="tbInfo" d:Text="Status" Text="" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock d:Text="Status" Text="{Binding Status}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
     </Grid>
 </Window>

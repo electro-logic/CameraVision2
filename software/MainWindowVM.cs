@@ -47,7 +47,10 @@ public partial class MainWindowVM : ObservableObject
     bool _isLinearizedEnabled = false;
     [ObservableProperty]
     bool _isDngLensCorrectionEnabled = false;
-    
+
+    [ObservableProperty]
+    string _status;
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DownloadImageCommand))]
     [NotifyCanExecuteChangedFor(nameof(ResetCommand))]
@@ -65,7 +68,7 @@ public partial class MainWindowVM : ObservableObject
     public OV8865.COM[] Communications => new OV8865.COM[] { OV8865.COM.COM_JTAG, OV8865.COM.COM_FT232H, OV8865.COM.COM_NONE };
 
     [RelayCommand]
-    public void Connect()
+    public async Task Connect()
     {
         if (IsConnected)
         {
@@ -74,26 +77,37 @@ public partial class MainWindowVM : ObservableObject
         }
         try
         {
+            IsEnabled = false;
+            Status = "Connecting...";            
             _sensor = new OV8865();
             IsConnected = true;
             Communication = OV8865.COM.COM_JTAG;
-            VideoSettings = JsonSerializer.Deserialize<List<VideoSetting>>(File.ReadAllText(@"Settings\CameraSettings.json"));
-            Thread.Sleep(250);
+            VideoSettings = JsonSerializer.Deserialize<List<VideoSetting>>(File.ReadAllText(@"Settings\CameraSettings.json"));            
+            await Task.Delay(250);
             // Hardcoded default settings
             CurrentVideoSetting = VideoSettings[13];
             Focus = 128;
             IsWhiteBalanceEnabled = true;
             MWBGainBlue = MWBGainGreen = MWBGainRed = 1.0;
             IsLensCorrectionEnabled = false;
-            ReadRegisters();
-            ReadMipiRegisters();
-            Communication = OV8865.COM.COM_FT232H;
+            Status = "Reading Camera Registers...";
+            await ReadRegisters(new Progress<double>(UpdateProgress));
+            Status = "Reading Mipi Registers...";
+            await ReadMipiRegisters(new Progress<double>(UpdateProgress));
+            //Communication = OV8865.COM.COM_FT232H;
+            Status = "Connected";
         }
         catch
         {
             Communication = OV8865.COM.COM_NONE;
             IsConnected = false;
+            Status = "Connection failed";
             MessageBox.Show("Connection failed");
+        }
+        finally
+        {
+            UpdateProgress(100);
+            IsEnabled = true;
         }
     }
 
@@ -156,20 +170,23 @@ public partial class MainWindowVM : ObservableObject
         Metadata.GetTIFFMetadata(maker, model, 3.37, 2.8, 4.6144, 3.472, 50, 100);
 
     [RelayCommand(CanExecute = nameof(IsConnected))]
-    public void ReadRegisters()
+    public async Task ReadRegisters(IProgress<double> progress)
     {
         Registers = new ObservableCollection<Register>(
             JsonSerializer.Deserialize<List<Register>>(File.ReadAllText(@"Settings\OV8865_Common.json"))
             .Concat(JsonSerializer.Deserialize<List<Register>>(File.ReadAllText(@"Settings\OV8865_MIPI.json")))
         );
-        foreach (var register in Registers)
+        for (int registerIndex = 0; registerIndex < Registers.Count; registerIndex++)
         {
+            var register = Registers[registerIndex];
             register.Value = _sensor.ReadReg(register.Address);
             register.PropertyChanged += (sender, e) =>
             {
                 var reg = sender as Register;
                 _sensor.WriteReg(reg.Address, (byte)reg.Value);
             };
+            progress?.Report((registerIndex+1) * 100 / Registers.Count);
+            await Task.Delay(1);
         }
         // Update GUI elements
         OnPropertyChanged(nameof(FPS));
@@ -180,20 +197,23 @@ public partial class MainWindowVM : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsConnected))]
-    public void ReadMipiRegisters()
+    public async Task ReadMipiRegisters(IProgress<double> progress)
     {
         MipiRegisters = new ObservableCollection<Register>(
             JsonSerializer.Deserialize<List<Register>>(File.ReadAllText(@"Settings\TC358748XBG_Common.json"))
             .Concat(JsonSerializer.Deserialize<List<Register>>(File.ReadAllText(@"Settings\TC358748XBG_Debug.json")))
         );
-        foreach (var register in MipiRegisters)
+        for (int registerIndex = 0; registerIndex < MipiRegisters.Count; registerIndex++)
         {
+            var register = MipiRegisters[registerIndex];
             register.Value = _sensor.ReadRegMipi(register.Address);
             register.PropertyChanged += (sender, e) =>
             {
                 var reg = sender as Register;
                 _sensor.WriteRegMipi(reg.Address, reg.Value);
-            };
+            }; 
+            progress?.Report((registerIndex + 1) * 100 / MipiRegisters.Count);
+            await Task.Delay(1);
         }
     }
 

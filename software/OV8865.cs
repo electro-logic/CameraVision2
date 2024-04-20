@@ -291,7 +291,9 @@ public class OV8865
     /// </summary>    
     public async Task<UInt16[]> GetImage(int width, int height, IProgress<double> progress)
     {
-        _io.WriteByte(CMD_RD_IMG);
+        progress.Report(1);
+
+        _io.WriteByte(CMD_RD_IMG);        
         UInt16[] img = new UInt16[width * height];
 
         var sw = Stopwatch.StartNew();
