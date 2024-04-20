@@ -74,6 +74,15 @@ FT232H is not supported on the DE1-SoC.
 
 Note: An optional fan is recommended on DE1-SoC when HPS is used, please read the [article](https://electro-logic.blogspot.com/2015/07/fpga-cyclone-v-soc-e-de1-soc.html) for more info.
 
+Timing Notes: MIPI Camera Clock is set to 50 MHz to support the full resolution and the minimum sampling clock (PLL_SYS) is 100 MHz.
+
+If the design can't close JTAG timing, the USB Blaster II frequency can be lowered to 16 MHz with the command:
+C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --setparam 1 JtagClock 16M
+and restored to the original 24 MHz frequency with
+C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --setparam 1 JtagClock 24M
+To check the current frequency:
+C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --getparam 1 JtagClock
+
 F.A.Q.
 
 **Q) I can't program the FPGA**
@@ -82,7 +91,7 @@ A) Please close the Camera Vision software
 
 **Q) When I launch CameraVision.exe image is corrupted.**
 
-A) Likely the MIPI Integrated Circuit on the D8M is out-of-sync. Please Read the MIPI bridge registers CSIStatus, FIFOStatus, etc.. (in normal conditions should be 0). Reprogram the FPGA or Try to press KEY0 on DE0-NANO to reset the system and launch again the software. Please enable the test color-bar by setting the camera register 0x5E00 to 0x80 to ensure that the problem is a data transmission error.
+A) Likely the MIPI Integrated Circuit on the D8M is out-of-sync. Please Read the MIPI bridge registers CSIStatus, FIFOStatus, etc.. (in normal conditions should be 0). Reprogram the FPGA or Try to press KEY0 on DE0-NANO to reset the system and launch again the software. Please enable the test color-bar by setting the camera register 0x5E00 to 0x80 (128 base 10) to ensure that the problem is a data transmission error.
 
 
 **Q) How can I edit the Nios II firmware?**
