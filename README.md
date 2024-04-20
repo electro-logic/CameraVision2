@@ -64,9 +64,9 @@ Notes: the calculated MTF is approximated. Proper measurements require an accura
 
 DE1-Soc notes
 
-Support for DE1-SoC is experimental. JTAG only is supported at this time and is slower than DE0/Nano. An Ethernet protocol may be implemented in future on the HPS.
+Support for DE1-SoC is experimental. JTAG only is supported at this time and is slower than DE0-Nano. An Ethernet protocol may be implemented in future on the HPS.
 
-GPIO 1 (JP2) should be used to connect D8M.
+GPIO 1 (JP2) should be used to connect D8M (see below picture).
 
 FT232H is not supported on the DE1-SoC.
 
@@ -108,7 +108,7 @@ A) You can use any Terasic development board compatible with the D8M camera, for
 
 **Q) During the compilation I get the Error 12006**
 
-A) You need to add the mipi_controller folder to the IP path in QSys / Tools / Options / Search Path and then regenerate the HDL. Note; QSys is named Platform Designer in latest releases of Quartus.
+A) You need to add the mipi_controller folder to the IP path in QSys / Tools / Options / Search Path and then regenerate the HDL. Note: QSys is named Platform Designer in latest releases of Quartus.
 
 
 **Q) What's next?**
