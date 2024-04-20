@@ -3,7 +3,6 @@
 			clk_clk                                 : in    std_logic                     := 'X';             -- clk
 			clk_mipi_refclk_clk                     : out   std_logic;                                        -- clk
 			clk_sdram_clk                           : out   std_logic;                                        -- clk
-			ft232h_clk_clk                          : in    std_logic                     := 'X';             -- clk
 			i2c_opencores_camera_export_scl_pad_io  : inout std_logic                     := 'X';             -- scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io  : inout std_logic                     := 'X';             -- sda_pad_io
 			i2c_opencores_mipi_export_scl_pad_io    : inout std_logic                     := 'X';             -- scl_pad_io
@@ -33,7 +32,6 @@
 			clk_clk                                 => CONNECTED_TO_clk_clk,                                 --                              clk.clk
 			clk_mipi_refclk_clk                     => CONNECTED_TO_clk_mipi_refclk_clk,                     --                  clk_mipi_refclk.clk
 			clk_sdram_clk                           => CONNECTED_TO_clk_sdram_clk,                           --                        clk_sdram.clk
-			ft232h_clk_clk                          => CONNECTED_TO_ft232h_clk_clk,                          --                       ft232h_clk.clk
 			i2c_opencores_camera_export_scl_pad_io  => CONNECTED_TO_i2c_opencores_camera_export_scl_pad_io,  --      i2c_opencores_camera_export.scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io  => CONNECTED_TO_i2c_opencores_camera_export_sda_pad_io,  --                                 .sda_pad_io
 			i2c_opencores_mipi_export_scl_pad_io    => CONNECTED_TO_i2c_opencores_mipi_export_scl_pad_io,    --        i2c_opencores_mipi_export.scl_pad_io

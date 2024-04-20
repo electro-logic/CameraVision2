@@ -3,7 +3,6 @@ module qsys (
 	clk_clk,
 	clk_mipi_refclk_clk,
 	clk_sdram_clk,
-	ft232h_clk_clk,
 	i2c_opencores_camera_export_scl_pad_io,
 	i2c_opencores_camera_export_sda_pad_io,
 	i2c_opencores_mipi_export_scl_pad_io,
@@ -29,7 +28,6 @@ module qsys (
 	input		clk_clk;
 	output		clk_mipi_refclk_clk;
 	output		clk_sdram_clk;
-	input		ft232h_clk_clk;
 	inout		i2c_opencores_camera_export_scl_pad_io;
 	inout		i2c_opencores_camera_export_sda_pad_io;
 	inout		i2c_opencores_mipi_export_scl_pad_io;

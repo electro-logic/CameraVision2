@@ -22,61 +22,6 @@
          type = "boolean";
       }
    }
-   element clk_ft232h
-   {
-      datum _sortIndex
-      {
-         value = "11";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "0";
-         type = "boolean";
-      }
-   }
-   element clock_crossing_bridge
-   {
-      datum _sortIndex
-      {
-         value = "12";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "0";
-         type = "boolean";
-      }
-   }
-   element clock_crossing_bridge.s0
-   {
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
-      }
-   }
-   element ft232h
-   {
-      datum _sortIndex
-      {
-         value = "13";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "0";
-         type = "boolean";
-      }
-   }
-   element ft232h.avalon
-   {
-      datum baseAddress
-      {
-         value = "33555472";
-         type = "String";
-      }
-   }
    element i2c_opencores_camera
    {
       datum _sortIndex
@@ -270,7 +215,7 @@
    {
       datum _sortIndex
       {
-         value = "16";
+         value = "13";
          type = "int";
       }
    }
@@ -278,7 +223,7 @@
    {
       datum _sortIndex
       {
-         value = "17";
+         value = "14";
          type = "int";
       }
    }
@@ -286,7 +231,7 @@
    {
       datum _sortIndex
       {
-         value = "15";
+         value = "12";
          type = "int";
       }
    }
@@ -318,7 +263,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "11";
          type = "int";
       }
       datum sopceditor_expanded
@@ -388,8 +333,6 @@
    internal="pll_sdram.outclk0"
    type="clock"
    dir="start" />
- <interface name="ft232h" internal="ft232h.conduit_end" />
- <interface name="ft232h_clk" internal="clk_ft232h.clk_in" type="clock" dir="end" />
  <interface
    name="i2c_opencores_camera_export"
    internal="i2c_opencores_camera.export"
@@ -424,30 +367,6 @@
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
- <module name="clk_ft232h" kind="clock_source" version="18.1" enabled="1">
-  <parameter name="clockFrequency" value="60000000" />
-  <parameter name="clockFrequencyKnown" value="true" />
-  <parameter name="inputClockFrequency" value="0" />
-  <parameter name="resetSynchronousEdges" value="NONE" />
- </module>
- <module
-   name="clock_crossing_bridge"
-   kind="altera_avalon_mm_clock_crossing_bridge"
-   version="18.1"
-   enabled="0">
-  <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
-  <parameter name="ADDRESS_WIDTH" value="32" />
-  <parameter name="COMMAND_FIFO_DEPTH" value="16" />
-  <parameter name="DATA_WIDTH" value="8" />
-  <parameter name="MASTER_SYNC_DEPTH" value="2" />
-  <parameter name="MAX_BURST_SIZE" value="8" />
-  <parameter name="RESPONSE_FIFO_DEPTH" value="16" />
-  <parameter name="SLAVE_SYNC_DEPTH" value="2" />
-  <parameter name="SYMBOL_WIDTH" value="8" />
-  <parameter name="SYSINFO_ADDR_WIDTH" value="26" />
-  <parameter name="USE_AUTO_ADDRESS_WIDTH" value="0" />
- </module>
- <module name="ft232h" kind="ft232h" version="2.0" enabled="0" />
  <module
    name="i2c_opencores_camera"
    kind="i2c_opencores"
@@ -561,13 +480,13 @@
   <parameter name="width" value="1" />
  </module>
  <module name="nios2_gen2" kind="altera_nios2_gen2" version="18.1" enabled="1">
-  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="6" />
-  <parameter name="AUTO_CLK_RESET_DOMAIN" value="6" />
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="5" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="5" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="bht_ramBlockType" value="Automatic" />
   <parameter name="breakOffset" value="32" />
-  <parameter name="breakSlave" value="None" />
+  <parameter name="breakSlave" value="memory_system.s1" />
   <parameter name="cdx_enabled" value="false" />
   <parameter name="clockFrequency" value="100000000" />
   <parameter name="cpuArchRev" value="1" />
@@ -1078,7 +997,7 @@
   <parameter name="gui_output_clock_frequency7" value="100.0" />
   <parameter name="gui_output_clock_frequency8" value="100.0" />
   <parameter name="gui_output_clock_frequency9" value="100.0" />
-  <parameter name="gui_phase_shift0" value="-3800" />
+  <parameter name="gui_phase_shift0" value="-3758" />
   <parameter name="gui_phase_shift1" value="0" />
   <parameter name="gui_phase_shift10" value="0" />
   <parameter name="gui_phase_shift11" value="0" />
@@ -1383,27 +1302,9 @@
    enabled="1">
   <parameter name="id" value="403708297" />
  </module>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="ft232h.avalon_master_0"
-   end="clock_crossing_bridge.s0">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
  <connection kind="avalon" version="18.1" start="mipi.avm" end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="nios2_gen2.data_master"
-   end="ft232h.avalon">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02000410" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1532,33 +1433,9 @@
   <parameter name="baseAddress" value="0x04010000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="clock_crossing_bridge.m0"
-   end="sdram.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="clock"
-   version="18.1"
-   start="clk_ft232h.clk"
-   end="ft232h.clock_sink" />
- <connection
-   kind="clock"
-   version="18.1"
-   start="clk_ft232h.clk"
-   end="clock_crossing_bridge.m0_clk" />
  <connection kind="clock" version="18.1" start="clk_50.clk" end="pll_sys.refclk" />
  <connection kind="clock" version="18.1" start="clk_50.clk" end="pll_mipi.refclk" />
  <connection kind="clock" version="18.1" start="clk_50.clk" end="pll_sdram.refclk" />
- <connection
-   kind="clock"
-   version="18.1"
-   start="clk_ft232h.clk"
-   end="clock_crossing_bridge.s0_clk" />
  <connection kind="clock" version="18.1" start="pll_sys.outclk0" end="led.clk" />
  <connection
    kind="clock"
@@ -1627,27 +1504,12 @@
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
-   end="clk_ft232h.clk_in_reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_50.clk_reset"
    end="i2c_opencores_mipi.clock_reset" />
  <connection
    kind="reset"
    version="18.1"
    start="clk_50.clk_reset"
    end="i2c_opencores_camera.clock_reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_50.clk_reset"
-   end="clock_crossing_bridge.m0_reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_ft232h.clk_reset"
-   end="clock_crossing_bridge.m0_reset" />
  <connection
    kind="reset"
    version="18.1"
@@ -1700,21 +1562,6 @@
    version="18.1"
    start="clk_50.clk_reset"
    end="memory_system.reset1" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_50.clk_reset"
-   end="ft232h.reset_sink" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_ft232h.clk_reset"
-   end="ft232h.reset_sink" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_50.clk_reset"
-   end="clock_crossing_bridge.s0_reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

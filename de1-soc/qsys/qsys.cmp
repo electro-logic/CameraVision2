@@ -3,7 +3,6 @@
 			clk_clk                                 : in    std_logic                     := 'X';             -- clk
 			clk_mipi_refclk_clk                     : out   std_logic;                                        -- clk
 			clk_sdram_clk                           : out   std_logic;                                        -- clk
-			ft232h_clk_clk                          : in    std_logic                     := 'X';             -- clk
 			i2c_opencores_camera_export_scl_pad_io  : inout std_logic                     := 'X';             -- scl_pad_io
 			i2c_opencores_camera_export_sda_pad_io  : inout std_logic                     := 'X';             -- sda_pad_io
 			i2c_opencores_mipi_export_scl_pad_io    : inout std_logic                     := 'X';             -- scl_pad_io

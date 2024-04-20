@@ -76,6 +76,10 @@ Note: An optional fan is recommended on DE1-SoC when HPS is used, please read th
 
 F.A.Q.
 
+**Q) I can't program the FPGA**
+
+A) Please close the Camera Vision software
+
 **Q) When I launch CameraVision.exe image is corrupted.**
 
 A) Likely the MIPI Integrated Circuit on the D8M is out-of-sync. Please Read the MIPI bridge registers CSIStatus, FIFOStatus, etc.. (in normal conditions should be 0). Reprogram the FPGA or Try to press KEY0 on DE0-NANO to reset the system and launch again the software. Please enable the test color-bar by setting the camera register 0x5E00 to 0x80 to ensure that the problem is a data transmission error.
