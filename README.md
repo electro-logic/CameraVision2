@@ -64,7 +64,9 @@ Notes: the calculated MTF is approximated. Proper measurements require an accura
 
 DE1-Soc:
 
-Support for DE1-SoC is experimental. FT232H is not supported on DE1-SoC and GPIO 1 (JP2) should be used to connect D8M.
+Support for DE1-SoC is experimental. GPIO 1 (JP2) should be used to connect D8M. FT232H is not supported on the DE1-SoC.
+
+![alt text](docs/de1-soc_d8m.jpg)
 
 F.A.Q.
 
