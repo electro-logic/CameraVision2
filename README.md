@@ -62,7 +62,8 @@ The tiny lens is pretty good in terms of sharpness evaluated with lines per mill
 
 Notes: the calculated MTF is approximated. Proper measurements require an accurate setup. 
 
-DE1-Soc notes
+
+# DE1-Soc notes
 
 Support for DE1-SoC is experimental. JTAG only is supported at this time and is slower than DE0-Nano. An Ethernet protocol may be implemented in future on the HPS.
 
@@ -89,7 +90,7 @@ To check the current frequency:
 C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --getparam 1 JtagClock
 
 
-F.A.Q.
+# F.A.Q.
 
 **Q) Do I need the UM232H module to use this project?**
 
