@@ -60,7 +60,7 @@ architecture rtl of mipi_controller is
 			wrreq		: IN STD_LOGIC;
 			full		: OUT STD_LOGIC;
 			q			: OUT STD_LOGIC_VECTOR (9 DOWNTO 0);
-			usedw		: OUT STD_LOGIC_VECTOR (9 DOWNTO 0)
+			usedw		: OUT STD_LOGIC_VECTOR (10 DOWNTO 0)
 		);
 	end component;
 
@@ -80,7 +80,7 @@ architecture rtl of mipi_controller is
 	signal fifo_full		: std_logic;
 	signal fifo_q			: std_logic_vector(9 downto 0);
 	signal fifo_data		: std_logic_vector(9 downto 0);
-	signal fifo_usedw		: std_logic_vector(9 downto 0);	
+	signal fifo_usedw		: std_logic_vector(10 downto 0);	
 		
 	type state_avm is (state_idle, state_read, state_write, state_read_write);
 	signal avm_state 		: state_avm;

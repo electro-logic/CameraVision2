@@ -362,42 +362,30 @@ public partial class MainWindowVM : ObservableObject
         if (dlg.ShowDialog() == true)
         {
             string filename = dlg.FileName;
-            if (Path.GetExtension(filename).ToLower() == ".dng")
-            {
-                string filenameTIFF = filename + ".tiff";
-                ExifTool.DNGtoTIFF(filename, filenameTIFF);
-                filename = filenameTIFF;
-            }
-            var decoder = BitmapDecoder.Create(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            var frame = decoder.Frames[0];
-            var w = frame.PixelWidth;
-            var h = frame.PixelHeight;
-
-            if (frame.Format.BitsPerPixel != 16)
-                return;
-
-            Debug.Assert(frame.Format.BitsPerPixel == 16);
-
-            //CurrentDemosaicingAlgorithm = Algoritms.DemosaicingAlgorithms.BGGR_BAYER_RAW;
-            RawImage = new RawImage(w, h);            
-            frame.CopyPixels(RawImage.Pixels, w * 2, 0);
-            Image = new WriteableBitmap(w, h, 96, 96, _pixelFormat, null);
-            UpdateImage(RawImage.Pixels);
-            /*
-            // Neutral
-            DebugLinearity(1188, new[] { 866, 776, 686, 596, 506, 416 });
-            // Enhanced
-            DebugLinearity(680, new[] { 372, 450, 528, 606, 684, 762, 840, 918 });
-            // White 2.0                    0.945421 = 61958
-            DebugLinearity(1462, new[] { 654 });
-            // White Giotto                 0.848536 = 55609
-            DebugLinearity(132, new[] { 844 });
-            // Black 3.0                    0.019948 = 1307
-            DebugLinearity(132, new[] { 478 });
-            // Musou Black Fabric KIWAMI    0.001052 = 69
-            DebugLinearity(132, new[] { 654 });
-            */
+            OpenImage(filename);
         }
+    }
+    public void OpenImage(string filename)
+    {
+        if (Path.GetExtension(filename).ToLower() == ".dng")
+        {
+            string filenameTIFF = filename + ".tiff";
+            ExifTool.DNGtoTIFF(filename, filenameTIFF);
+            filename = filenameTIFF;
+        }
+        var decoder = BitmapDecoder.Create(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+        var frame = decoder.Frames[0];
+        var w = frame.PixelWidth;
+        var h = frame.PixelHeight;
+
+        if (frame.Format.BitsPerPixel != 16)
+            return;
+
+        Debug.Assert(frame.Format.BitsPerPixel == 16);
+        RawImage = new RawImage(w, h);
+        frame.CopyPixels(RawImage.Pixels, w * 2, 0);
+        Image = new WriteableBitmap(w, h, 96, 96, _pixelFormat, null);
+        UpdateImage(RawImage.Pixels);
     }
 
     [RelayCommand(CanExecute = nameof(IsConnected))]

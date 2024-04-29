@@ -231,7 +231,7 @@
 		n_cnt_odd_div_duty_en => "false",
 		number_of_clocks => 1,
 		operation_mode => "normal",
-		output_clock_frequency0 => "200.000000 MHz",
+		output_clock_frequency0 => "250.000000 MHz",
 		output_clock_frequency1 => "0 MHz",
 		output_clock_frequency10 => "0 MHz",
 		output_clock_frequency11 => "0 MHz",

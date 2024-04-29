@@ -812,7 +812,7 @@
   <parameter name="gui_phase_shift7" value="0" />
   <parameter name="gui_phase_shift8" value="0" />
   <parameter name="gui_phase_shift9" value="0" />
-  <parameter name="gui_phase_shift_deg0" value="0.0" />
+  <parameter name="gui_phase_shift_deg0" value="-25.0" />
   <parameter name="gui_phase_shift_deg1" value="0.0" />
   <parameter name="gui_phase_shift_deg10" value="0.0" />
   <parameter name="gui_phase_shift_deg11" value="0.0" />
@@ -835,7 +835,7 @@
   <parameter name="gui_pll_bandwidth_preset" value="Auto" />
   <parameter name="gui_pll_cascading_mode">Create an adjpllin signal to connect with an upstream PLL</parameter>
   <parameter name="gui_pll_mode" value="Integer-N PLL" />
-  <parameter name="gui_ps_units0" value="ps" />
+  <parameter name="gui_ps_units0" value="degrees" />
   <parameter name="gui_ps_units1" value="ps" />
   <parameter name="gui_ps_units10" value="ps" />
   <parameter name="gui_ps_units11" value="ps" />

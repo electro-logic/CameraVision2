@@ -221,7 +221,6 @@ set_global_assignment -name QIP_FILE qsys/synthesis/qsys.qip
 set_global_assignment -name VHDL_FILE de1_soc_d8m.vhd
 set_global_assignment -name QIP_FILE software/de1_soc_camera_vision/mem_init/meminit.qip
 set_global_assignment -name VHDL_FILE mipi_controller.vhd
-set_global_assignment -name VHDL_FILE fifo.vhd
 set_global_assignment -name QIP_FILE fifo.qip
 set_global_assignment -name SDC_FILE "de1-soc.SDC"
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK2_50

@@ -1,6 +1,8 @@
 ﻿// Author: Leonardo Tazzini (http://electro-logic.blogspot.it)
 
 using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 
 namespace CameraVision;
@@ -41,5 +43,24 @@ public partial class MainWindow : System.Windows.Window
     void Image_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
     {
         _vm.Status = string.Empty;
+    }
+
+    void Window_Drop(object sender, System.Windows.DragEventArgs e)
+    {
+        try
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if(files.Length > 0)
+                {
+                    _vm.OpenImage(files[0]);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+        }
     }
 }
