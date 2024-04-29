@@ -123,7 +123,8 @@ public class JtagUart : IDisposable, StdIO
             }
             remainingBytes -= writtenBytes;
         }
-        NativeMethods.jtagatlantic_flush(_handle);
+        // Slow down too much the communication
+        //NativeMethods.jtagatlantic_flush(_handle);
     }
 
     public void Flush()
