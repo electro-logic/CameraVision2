@@ -91,6 +91,11 @@ C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --getparam 1 JtagClock
 
 F.A.Q.
 
+**Q) Do I need the UM232H module to use this project?**
+
+A) No, the module is optional 
+
+
 **Q) I can't program the FPGA**
 
 A) Please close the Camera Vision software
