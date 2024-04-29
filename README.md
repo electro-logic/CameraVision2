@@ -77,17 +77,29 @@ Note: An optional fan is recommended on DE1-SoC when HPS is used, please read th
 Timing Notes: MIPI Camera Clock is set to 50 MHz to support the full resolution and the minimum sampling clock (PLL_SYS) is 100 MHz.
 
 If the design can't close JTAG timing, the USB Blaster II frequency can be lowered to 16 MHz with the command:
+
 C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --setparam 1 JtagClock 16M
+
 and restored to the original 24 MHz frequency with
+
 C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --setparam 1 JtagClock 24M
+
 To check the current frequency:
+
 C:\intelFPGA\18.1\quartus\bin64\jtagconfig.exe --getparam 1 JtagClock
+
 
 F.A.Q.
 
 **Q) I can't program the FPGA**
 
 A) Please close the Camera Vision software
+
+
+**Q) When I launch CameraVision.exe image I get the message UART_ALREADY_USED**
+
+A) Please close the Quartus Programmer or any other software that may use the FPGA JTAG connection
+
 
 **Q) When I launch CameraVision.exe image is corrupted.**
 
