@@ -27,7 +27,7 @@ use ieee.std_logic_unsigned.all;
 
 entity avalon_ft232h is
 	port 
-	(					
+	(			
 		avalon_clk 					: in std_logic;								-- 60 MHz from ft232h
 	
 		-- AVALON SLAVE 			(NIOS is master)
@@ -39,7 +39,6 @@ entity avalon_ft232h is
 		avalon_readdata 			: out std_logic_vector (7 downto 0);		
 		
 		-- AVALON MASTER 			(SDRAM is slave)
-		avm_clk						: in std_logic;								-- SDRAM 100 MHz
 		avm_address					: out std_logic_vector (31 downto 0);		
 		avm_write					: out std_logic;
 		avm_writedata				: out std_logic_vector (7 downto 0);
@@ -90,47 +89,10 @@ architecture rtl of avalon_ft232h is
 	--signal debug_avm_read			: std_logic; attribute noprune of debug_avm_read: signal is true; attribute preserve of debug_avm_read: signal is true; 			
 	--signal debug_avm_waitrequest	: std_logic; attribute noprune of debug_avm_waitrequest: signal is true; attribute preserve of debug_avm_waitrequest: signal is true; 				
 	--signal debug_avm_readdatavalid	: std_logic; attribute noprune of debug_avm_readdatavalid: signal is true; attribute preserve of debug_avm_readdatavalid: signal is true; 									
-
-	component ft232h_fifo IS
-		PORT
-		(
-			data			: IN STD_LOGIC_VECTOR (7 DOWNTO 0);
-			rdclk			: IN STD_LOGIC ;
-			rdreq			: IN STD_LOGIC ;
-			wrclk			: IN STD_LOGIC ;
-			wrreq			: IN STD_LOGIC ;
-			q				: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-			rdempty		: OUT STD_LOGIC ;
-			rdusedw		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-			wrfull		: OUT STD_LOGIC 
-		);
-	END component;
-	
-	signal fifo_rdreq		: std_logic;	
-	signal fifo_wrreq		: std_logic;
-	signal fifo_rdempty	: std_logic;
-	signal fifo_wrfull	: std_logic;
-	signal fifo_q			: std_logic_vector(7 downto 0);	-- data out
-	signal fifo_rdusedw	: std_logic_vector(7 downto 0);	
-	
+			
 begin
 	
-	nSIWU <= '1';
-	
-	-- WR               RD
-	-- SDRAM -> FIFO -> FT232H
-	
-	u_ft232h_fifo : ft232h_fifo PORT MAP (		
-		rdclk		=>	avalon_clk,
-		wrclk		=> avm_clk,
-		data 		=> avm_readdata,
-		rdreq 	=> fifo_rdreq,		
-		wrreq 	=> avm_readdatavalid,
-		q 			=> fifo_q,
-		rdempty 	=> fifo_rdempty,
-		rdusedw	=> fifo_rdusedw,				
-		wrfull 	=> fifo_wrfull
-	);	
+	nSIWU <= '1';	
 
 --	-- Debug registers process
 --	process(all)
@@ -143,21 +105,6 @@ begin
 --			debug_avm_readdatavalid	<= avm_readdatavalid;
 --		--end if;	
 --	end process;
-
-
-	-- Read SDRAM Write Fifo process
-	process(all)
-	begin
-		if rising_edge(avm_clk) then
-		
-			case state is
-			
-				when state_dma_read_req => null;
-			
-			end case;
-		
-		end if;			
-	end process;
 	
 	-- Read registers process (available on every state)
 	process(all)
@@ -185,7 +132,7 @@ begin
 	begin	
 		if avalon_reset = '1' then
 			state_tx		<= state_tx_busy;
-		elsif rising_edge(avalon_clk) then
+		elsif (rising_edge(avalon_clk)) then
 			case state_tx is
 				when state_tx_busy =>
 					if nTXE = '0' then
@@ -208,7 +155,7 @@ begin
 	end process;
 	
 	-- Sequential Logic
-	process (all)
+	process (avalon_clk, avalon_reset)
    begin			
       if avalon_reset = '1' then         
 			data_reg 	<= (others=>'0');
@@ -216,7 +163,7 @@ begin
 			dl_reg		<= (others=>'0');
 			di_reg		<= (others=>'0');			
 			state 		<= idle_state;
-      elsif rising_edge(avalon_clk) then			
+      elsif (rising_edge(avalon_clk)) then			
 		
 			-- Update Control Register
 			control_reg(5) <= nTXE;
