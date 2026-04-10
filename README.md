@@ -150,5 +150,13 @@ A) There is still room for improvements, for example:
 - Add parameters to customize the mipi controller and the ft232h component from the Platform Designer
 - Additional image statistics and histogram
 - Video recording
-- ASCOM driver to extend compatibility with other software
-- Ethernet communication on DE1-SoC
+- Ethernet communication on DE1-SoC and new boards
+- Improve stability and timings
+   - Insert an Avalon-MM Pipeline Bridge directly in front of the SDRAM controller
+   - SDC Timing Constraints (MIPI Input Constraints, FT232H Synchronous FIFO Constraints, SDRAM Constraints)
+   - Signal Integrity & I/O Assignments
+      - Current Strength: Increase for all high-speed FT232H and MIPI pins
+      - Slew Rate: Set to Fast for the FT232H data bus, control pins, and the MIPI reference clock
+      - Termination: Apply SERIES 50 OHM WITHOUT CALIBRATION to the FT232H data bus and high-speed outputs to eliminate board-level reflections
+      - mipi_bridge_config.c (TC358748XBG): Update initialization registers to Rev 1.2 specifications (Dynamic CSI-2 PHY Timings, Continuous Clock Mode Support, Staged Reset Sequence)
+      - mipi_camera_config.c (OV8865): Disable MIPI PHY power-down during blanking intervals to prevent the Toshiba bridge from losing link state
