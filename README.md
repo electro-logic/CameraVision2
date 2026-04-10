@@ -16,7 +16,7 @@ What's new:
 - JTAG only / JTAG + USB 2.0 communication options
 - TIFF + DNG RAW export with metadata
 - Processing: Linearize, Builtin / DNG Lens Correction
-- Editor can works offline for debayering, export, etc..
+- Editor can work offline for debayering, export, etc..
 - Editor mouse info: X/Y, Rgb, RAW, RAW AVG5
 - Image Statistics, Download progress
 - New MIPI and Camera registers
@@ -147,16 +147,16 @@ A) You need to add the mipi_controller folder to the IP path in QSys / Tools / O
 A) The current physical interface between the FTDI UM232H module and the Altera DE0-Nano FPGA is a custom adapter board. Because this project relies on the FT232H's Synchronous 245 FIFO mode running at 60 MHz, the physical routing of this adapter is critical to the system's stability. A 60 MHz clock gives a tight ~16.6 ns period, and the FT232H demands a strict 7.5 ns setup time. If you are planning to build a robust, permanent setup for this project, a homemade/DIY etched board (like toner transfer) will work for prototyping, but it is highly recommended to design and fabricate a proper PCB. Even with a perfect PCB, you must configure the Cyclone IV's I/O pins to drive the FT232H effectively.
 
 
-**Q) What's next?**
+# Further developments
 
-A) There is still room for improvements, for example:
+There is still room for improvements, for example:
 - FT232H controller: fully utilise the USB 2.0 bandwidth by adding a FIFO memory to decouple the SDRAM memory
 - Improve the protocol to use a single cable (ex. JTAG only or FT232H only)
 - Add parameters to customize the mipi controller and the ft232h component from the Platform Designer
 - Additional image statistics and histogram
 - Video recording
 - Ethernet communication on DE1-SoC and new boards
-- Improve stability and timings
+- Stability and timings
    - Insert an Avalon-MM Pipeline Bridge directly in front of the SDRAM controller
    - SDC Timing Constraints (MIPI Input Constraints, FT232H Synchronous FIFO Constraints, SDRAM Constraints)
    - Signal Integrity & I/O Assignments
@@ -165,3 +165,4 @@ A) There is still room for improvements, for example:
       - Termination: Apply SERIES 50 OHM WITHOUT CALIBRATION to the FT232H data bus and high-speed outputs to eliminate board-level reflections
       - mipi_bridge_config.c (TC358748XBG): Update initialization registers to Rev 1.2 specifications (Dynamic CSI-2 PHY Timings, Continuous Clock Mode Support, Staged Reset Sequence)
       - mipi_camera_config.c (OV8865): Disable MIPI PHY power-down during blanking intervals to prevent the Toshiba bridge from losing link state
+      - The Terasic D8M-GPIO uses 33-ohm resistor networks (RN1-RN3) for source termination on all parallel data and sync lines. Consequently, the FPGA host must be configured with standard high-impedance inputs to maintain signal levels and avoid double-termination. Keep the 12mA or 16mA drive strength and SERIES 50 OHM termination on MIPI_REFCLK. This ensures the clock arrives at the D8M with enough energy to be clearly read by the bridge.
