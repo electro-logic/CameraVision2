@@ -142,6 +142,11 @@ A) You can use any Terasic development board compatible with the D8M camera, for
 A) You need to add the mipi_controller folder to the IP path in QSys / Tools / Options / Search Path and then regenerate the HDL. Note: QSys is named Platform Designer in latest releases of Quartus.
 
 
+**Q) How do I get the FPGA/UM232H adapter?**
+
+A) The current physical interface between the FTDI UM232H module and the Altera DE0-Nano FPGA is a custom adapter board. Because this project relies on the FT232H's Synchronous 245 FIFO mode running at 60 MHz, the physical routing of this adapter is critical to the system's stability. A 60 MHz clock gives a tight ~16.6 ns period, and the FT232H demands a strict 7.5 ns setup time. If you are planning to build a robust, permanent setup for this project, a homemade/DIY etched board (like toner transfer) will work for prototyping, but it is highly recommended to design and fabricate a proper PCB. Even with a perfect PCB, you must configure the Cyclone IV's I/O pins to drive the FT232H effectively.
+
+
 **Q) What's next?**
 
 A) There is still room for improvements, for example:
